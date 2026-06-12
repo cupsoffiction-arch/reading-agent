@@ -15,7 +15,7 @@
 <!-- PASSWORD PROTECTION -->
 <script>
 (function(){
-  const HASH='580db3c273e54b50b543598b20dcf7c5f25e03c7d439423a90aa0cc87205d2fd';
+  const HASH='230ef1b973a4d14095610d76e17722ab376e766c7422ecd0a84427090b21ca12';
   const KEY='cof_auth';
   async function sha256(str){
     const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
@@ -422,28 +422,44 @@ function setS(v){tbrSearch=v.toLowerCase();renderTBR();}
 // ─── JIRA ─────────────────────────────────────────────────────
 function renderJira(data){
   const issues = data || JIRA;
-  const groups=[
-    {label:'🔴 Write Review',items:issues.filter(j=>j.status==='Write Review')},
-    {label:'📖 Reading',items:issues.filter(j=>j.status==='Reading In Progress')},
-    {label:'📬 ARC Received',items:issues.filter(j=>j.status==='ARC Received')},
-    {label:'⏳ Awaiting Release',items:issues.filter(j=>j.status==='Awaiting Next Release')},
-    {label:'✅ Posted',items:issues.filter(j=>j.status==='Posted')},
-    {label:'📚 To Be Read',items:issues.filter(j=>j.status==='TO BE READ')},
-    {label:'❌ DNF',items:issues.filter(j=>j.status==='DNF')},
+
+  // Known statuses in display order — always show all, even if empty
+  const STATUSES = [
+    {key:'Write Review',      label:'✍️ Write Review',        cls:'warn'},
+    {key:'Film Review',       label:'🎬 Film Review',          cls:'warn'},
+    {key:'Reading In Progress',label:'📖 Reading In Progress', cls:'active'},
+    {key:'ARC Received',      label:'📬 ARC Received',         cls:''},
+    {key:'Awaiting Next Release',label:'⏳ Awaiting Next Release',cls:''},
+    {key:'TO BE READ',        label:'📚 To Be Read',           cls:''},
+    {key:'Posted',            label:'✅ Posted',               cls:''},
+    {key:'DNF',               label:'❌ DNF',                  cls:''},
   ];
+
+  // Also catch any statuses from live data not in our known list
+  const knownKeys = STATUSES.map(s=>s.key);
+  const liveStatuses = [...new Set(issues.map(i=>i.status))].filter(s=>!knownKeys.includes(s));
+  liveStatuses.forEach(s=> STATUSES.push({key:s, label:'📋 '+s, cls:''}));
+
   const lastSync = localStorage.getItem('jira_last_sync');
   const syncAge = lastSync ? Math.round((Date.now()-parseInt(lastSync))/60000) : null;
   let h=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
     <div style="font-size:12px;color:var(--text3)">${syncAge!==null?`Last synced ${syncAge} min ago`:'Static data — tap to sync'}</div>
     <button onclick="syncJira()" id="sync-btn" style="background:var(--purple);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:600;padding:7px 14px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="ti ti-refresh" style="font-size:14px"></i>Sync Jira</button>
   </div>`;
-  groups.forEach(g=>{
-    if(!g.items.length)return;
-    h+=`<div class="sec">${g.label} (${g.items.length})</div><div class="card">`;
-    g.items.forEach(j=>{
-      h+=`<div class="jira-row"><div class="jira-key">${j.key}</div><div class="jira-info"><div class="jira-title">${j.title}</div>${j.author?`<div class="jira-author">${j.author}</div>`:''}</div>${dueBadge(j.due)}</div>`;
-    });
-    h+=`</div>`;
+
+  STATUSES.forEach(s=>{
+    const items = issues.filter(j=>j.status===s.key);
+    const isEmpty = items.length === 0;
+    h+=`<div class="sec" style="${isEmpty?'opacity:0.4':''}">${s.label} (${items.length})</div>`;
+    if(isEmpty){
+      h+=`<div class="card" style="opacity:0.35;padding:10px 13px"><div style="font-size:12px;color:var(--text3);text-align:center">No items</div></div>`;
+    } else {
+      h+=`<div class="card ${s.cls}">`;
+      items.forEach(j=>{
+        h+=`<div class="jira-row"><div class="jira-key">${j.key}</div><div class="jira-info"><div class="jira-title">${j.title}</div>${j.author?`<div class="jira-author">${j.author}</div>`:''}</div>${dueBadge(j.due)}</div>`;
+      });
+      h+=`</div>`;
+    }
   });
   document.getElementById('p-jira').innerHTML=h;
 }
