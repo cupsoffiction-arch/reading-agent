@@ -420,17 +420,23 @@ function setF(f){tbrFilter=f;renderTBR();}
 function setS(v){tbrSearch=v.toLowerCase();renderTBR();}
 
 // ─── JIRA ─────────────────────────────────────────────────────
-function renderJira(){
+function renderJira(data){
+  const issues = data || JIRA;
   const groups=[
-    {label:'🔴 Write Review',items:JIRA.filter(j=>j.status==='Write Review')},
-    {label:'📖 Reading',items:JIRA.filter(j=>j.status==='Reading In Progress')},
-    {label:'📬 ARC Received',items:JIRA.filter(j=>j.status==='ARC Received')},
-    {label:'⏳ Awaiting Release',items:JIRA.filter(j=>j.status==='Awaiting Next Release')},
-    {label:'✅ Posted',items:JIRA.filter(j=>j.status==='Posted')},
-    {label:'📚 To Be Read',items:JIRA.filter(j=>j.status==='TO BE READ')},
-    {label:'❌ DNF',items:JIRA.filter(j=>j.status==='DNF')},
+    {label:'🔴 Write Review',items:issues.filter(j=>j.status==='Write Review')},
+    {label:'📖 Reading',items:issues.filter(j=>j.status==='Reading In Progress')},
+    {label:'📬 ARC Received',items:issues.filter(j=>j.status==='ARC Received')},
+    {label:'⏳ Awaiting Release',items:issues.filter(j=>j.status==='Awaiting Next Release')},
+    {label:'✅ Posted',items:issues.filter(j=>j.status==='Posted')},
+    {label:'📚 To Be Read',items:issues.filter(j=>j.status==='TO BE READ')},
+    {label:'❌ DNF',items:issues.filter(j=>j.status==='DNF')},
   ];
-  let h='';
+  const lastSync = localStorage.getItem('jira_last_sync');
+  const syncAge = lastSync ? Math.round((Date.now()-parseInt(lastSync))/60000) : null;
+  let h=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <div style="font-size:12px;color:var(--text3)">${syncAge!==null?`Last synced ${syncAge} min ago`:'Static data — tap to sync'}</div>
+    <button onclick="syncJira()" id="sync-btn" style="background:var(--purple);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:600;padding:7px 14px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="ti ti-refresh" style="font-size:14px"></i>Sync Jira</button>
+  </div>`;
   groups.forEach(g=>{
     if(!g.items.length)return;
     h+=`<div class="sec">${g.label} (${g.items.length})</div><div class="card">`;
@@ -527,6 +533,44 @@ BEHAVIOUR:
 
   document.getElementById('chat-send').disabled=false;
   msgs.scrollTop=msgs.scrollHeight;
+}
+
+
+// ─── JIRA SYNC ────────────────────────────────────────────────
+let LIVE_JIRA = null;
+
+async function syncJira(){
+  const btn = document.getElementById('sync-btn');
+  if(btn){ btn.innerHTML='<i class="ti ti-loader" style="font-size:14px"></i>Syncing…'; btn.disabled=true; }
+
+  try{
+    const res = await fetch(WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-app-token': TOKEN },
+      body: JSON.stringify({ action: 'jira_sync' })
+    });
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.detail || data.error || 'Sync failed');
+
+    LIVE_JIRA = data.issues;
+    localStorage.setItem('jira_last_sync', Date.now().toString());
+    localStorage.setItem('jira_cache', JSON.stringify(LIVE_JIRA));
+
+    // Re-render Jira tab and home with fresh data
+    renderJira(LIVE_JIRA);
+    // Load cached Jira if available
+const cached = localStorage.getItem('jira_cache');
+if(cached){ try{ LIVE_JIRA = JSON.parse(cached); }catch(e){} }
+renderHome();
+
+    if(btn){ btn.innerHTML='<i class="ti ti-check" style="font-size:14px"></i>Synced!'; btn.disabled=false; }
+    setTimeout(()=>{ if(btn){ btn.innerHTML='<i class="ti ti-refresh" style="font-size:14px"></i>Sync Jira'; } }, 2000);
+
+  } catch(e) {
+    if(btn){ btn.innerHTML='<i class="ti ti-alert-circle" style="font-size:14px"></i>Failed'; btn.disabled=false; }
+    setTimeout(()=>{ if(btn){ btn.innerHTML='<i class="ti ti-refresh" style="font-size:14px"></i>Sync Jira'; } }, 3000);
+    alert('Jira sync failed: ' + e.message);
+  }
 }
 
 // ─── INIT ─────────────────────────────────────────────────────
