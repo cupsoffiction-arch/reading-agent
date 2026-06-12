@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<!-- PWA / iOS meta — must be before everything else -->
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
@@ -11,21 +10,17 @@
 <meta name="theme-color" content="#7B5ECA"/>
 <link rel="manifest" href="manifest.json"/>
 <link rel="apple-touch-icon" href="icon-192.png"/>
-<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png"/>
-<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png"/>
-<!-- PASSWORD PROTECTION — change the hash below to use a different password.
-     To generate a new hash: https://emn178.github.io/online-tools/sha256.html
-     Current password: cupsoffiction2026 -->
+<title>Cups of Fiction</title>
+
+<!-- PASSWORD PROTECTION -->
 <script>
 (function(){
   const HASH='580db3c273e54b50b543598b20dcf7c5f25e03c7d439423a90aa0cc87205d2fd';
-  const SESSION_KEY='cof_auth';
-
+  const KEY='cof_auth';
   async function sha256(str){
     const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
   }
-
   function showLock(){
     document.documentElement.style.visibility='hidden';
     document.addEventListener('DOMContentLoaded',function(){
@@ -33,441 +28,514 @@
       document.body.innerHTML=`
       <style>
         *{box-sizing:border-box;margin:0;padding:0}
-        body{background:#0F0B1A;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+        body{background:#0F0B1A;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,sans-serif}
         .lock{background:#1A1428;border:1px solid rgba(123,94,202,0.3);border-radius:20px;padding:36px 28px;width:min(340px,90vw);text-align:center}
         .lock-icon{font-size:48px;margin-bottom:16px}
         .lock-title{font-size:22px;font-weight:700;color:#F0EAF8;margin-bottom:6px}
         .lock-sub{font-size:14px;color:#A898CC;margin-bottom:28px}
         .lock-input{width:100%;background:#0F0B1A;border:1px solid rgba(123,94,202,0.4);border-radius:12px;color:#F0EAF8;font-size:17px;padding:14px 16px;outline:none;text-align:center;letter-spacing:2px;margin-bottom:14px}
-        .lock-input:focus{border-color:#7B5ECA;box-shadow:0 0 0 3px rgba(123,94,202,0.2)}
+        .lock-input:focus{border-color:#7B5ECA}
         .lock-btn{width:100%;background:#7B5ECA;border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:600;padding:15px;cursor:pointer}
-        .lock-btn:active{opacity:0.85}
-        .lock-error{font-size:13px;color:#F07070;margin-top:10px;min-height:18px}
+        .lock-err{font-size:13px;color:#F07070;margin-top:10px;min-height:18px}
       </style>
       <div class="lock">
         <div class="lock-icon">📚</div>
         <div class="lock-title">Cups of Fiction</div>
-        <div class="lock-sub">Reading Agent · Private</div>
-        <input class="lock-input" id="pwd-in" type="password" placeholder="Password" autocomplete="current-password"/>
-        <button class="lock-btn" id="pwd-btn">Unlock</button>
-        <div class="lock-error" id="pwd-err"></div>
+        <div class="lock-sub">Personal Reading Assistant</div>
+        <input class="lock-input" id="pwd" type="password" placeholder="Password" autocomplete="current-password"/>
+        <button class="lock-btn" id="btn">Unlock</button>
+        <div class="lock-err" id="err"></div>
       </div>`;
-      const input=document.getElementById('pwd-in');
-      const btn=document.getElementById('pwd-btn');
-      const err=document.getElementById('pwd-err');
-      async function tryUnlock(){
+      const inp=document.getElementById('pwd'),btn=document.getElementById('btn'),err=document.getElementById('err');
+      async function go(){
         btn.textContent='Checking…';btn.disabled=true;
-        const h=await sha256(input.value.trim());
-        if(h===HASH){
-          sessionStorage.setItem(SESSION_KEY,'1');
-          location.reload();
-        }else{
-          err.textContent='Incorrect password — try again';
-          input.value='';input.focus();
-          btn.textContent='Unlock';btn.disabled=false;
-        }
+        const h=await sha256(inp.value.trim());
+        if(h===HASH){sessionStorage.setItem(KEY,'1');location.reload();}
+        else{err.textContent='Incorrect password';inp.value='';inp.focus();btn.textContent='Unlock';btn.disabled=false;}
       }
-      btn.addEventListener('click',tryUnlock);
-      input.addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock();});
-      input.focus();
+      btn.addEventListener('click',go);
+      inp.addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+      inp.focus();
     });
   }
-
-  if(sessionStorage.getItem(SESSION_KEY)!=='1'){
-    showLock();
-  }
+  if(sessionStorage.getItem(KEY)!=='1')showLock();
 })();
 </script>
-<title>Cups of Fiction — Reading Agent</title>
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
 <style>
 :root{
   --bg:#0F0B1A;--bg2:#1A1428;--bg3:#221B34;--bg4:#2D2445;
-  --purple:#7B5ECA;--purple-soft:#4A3580;--purple-glow:rgba(123,94,202,0.15);
-  --gold:#E8B96A;--gold-soft:rgba(232,185,106,0.15);
-  --green:#4ECBA0;--green-soft:rgba(78,203,160,0.15);
-  --red:#F07070;--red-soft:rgba(240,112,112,0.15);
-  --amber:#F0A050;--amber-soft:rgba(240,160,80,0.15);
+  --purple:#7B5ECA;--ps:rgba(123,94,202,0.15);--pb:rgba(123,94,202,0.3);
+  --green:#4ECBA0;--gs:rgba(78,203,160,0.15);
+  --red:#F07070;--rs:rgba(240,112,112,0.15);
+  --amber:#F0A050;--as2:rgba(240,160,80,0.15);
+  --gold:#E8B96A;--golds:rgba(232,185,106,0.15);
   --text:#F0EAF8;--text2:#A898CC;--text3:#6B5C8A;
-  --border:rgba(123,94,202,0.2);--radius:14px;--radius-sm:8px;
-  --safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);
+  --border:rgba(123,94,202,0.2);--r:14px;--r2:10px;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bot:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden}
 .app{display:flex;flex-direction:column;height:100%;padding-top:var(--safe-top)}
+
 /* Header */
-.app-header{padding:16px 20px 12px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0}
-.app-header-inner{display:flex;align-items:center;gap:12px}
-.app-icon{width:36px;height:36px;border-radius:10px;background:var(--purple-glow);border:1px solid var(--purple-soft);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.app-name{font-size:17px;font-weight:600;letter-spacing:-0.3px}
-.app-sub{font-size:12px;color:var(--text2);margin-top:1px}
+.header{padding:14px 18px 10px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;gap:10px}
+.header-icon{width:34px;height:34px;border-radius:9px;background:var(--ps);border:1px solid var(--pb);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.header-name{font-size:16px;font-weight:600}
+.header-sub{font-size:11px;color:var(--text2);margin-top:1px}
+.header-date{margin-left:auto;font-size:11px;color:var(--text3);text-align:right}
+
 /* Tab bar */
 .tabbar{display:flex;background:var(--bg);border-top:1px solid var(--border);padding-bottom:var(--safe-bot);flex-shrink:0}
-.tabbar-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 8px;background:none;border:none;color:var(--text3);font-size:10px;cursor:pointer;transition:color .15s}
-.tabbar-btn i{font-size:22px;line-height:1}
-.tabbar-btn.on{color:var(--purple)}
-.tabbar-btn.on i{filter:drop-shadow(0 0 6px var(--purple))}
+.tbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 7px;background:none;border:none;color:var(--text3);font-size:10px;cursor:pointer}
+.tbtn i{font-size:21px}
+.tbtn.on{color:var(--purple)}
+
 /* Content */
 .content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.panel{display:none;padding:16px 16px 24px;animation:fadeIn .15s ease}
+.panel{display:none;padding:14px 14px 20px}
 .panel.on{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
 /* Cards */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
-.card.urgent{border-color:var(--red);box-shadow:0 0 12px var(--red-soft)}
-.card.active{border-color:var(--green);box-shadow:0 0 12px var(--green-soft)}
-.card.action{border-color:var(--amber);box-shadow:0 0 12px var(--amber-soft)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:13px;margin-bottom:9px}
+.card.urgent{border-color:var(--red);box-shadow:0 0 10px var(--rs)}
+.card.active{border-color:var(--green);box-shadow:0 0 10px var(--gs)}
+.card.warn{border-color:var(--amber);box-shadow:0 0 10px var(--as2)}
 .card-title{font-size:15px;font-weight:600;margin-bottom:3px;line-height:1.3}
-.card-sub{font-size:13px;color:var(--text2)}
+.card-sub{font-size:12px;color:var(--text2);line-height:1.4}
 .card-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+
 /* Badges */
 .badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;white-space:nowrap}
-.badge-purple{background:var(--purple-glow);color:var(--purple);border:1px solid var(--purple-soft)}
-.badge-green{background:var(--green-soft);color:var(--green)}
-.badge-amber{background:var(--amber-soft);color:var(--amber)}
-.badge-red{background:var(--red-soft);color:var(--red)}
-.badge-gold{background:var(--gold-soft);color:var(--gold)}
-.badge-dim{background:var(--bg3);color:var(--text3)}
-.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.b-purple{background:var(--ps);color:var(--purple);border:1px solid var(--pb)}
+.b-green{background:var(--gs);color:var(--green)}
+.b-amber{background:var(--as2);color:var(--amber)}
+.b-red{background:var(--rs);color:var(--red)}
+.b-gold{background:var(--golds);color:var(--gold)}
+.b-dim{background:var(--bg3);color:var(--text3)}
+.tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+
 /* Metrics */
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.metric{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
-.metric-label{font-size:11px;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
-.metric-value{font-size:26px;font-weight:700;letter-spacing:-1px}
-.metric-note{font-size:11px;color:var(--text3);margin-top:2px}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:13px}
+.m-label{font-size:11px;color:var(--text2);margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em}
+.m-value{font-size:24px;font-weight:700;letter-spacing:-1px}
+.m-note{font-size:11px;color:var(--text3);margin-top:2px}
+
 /* Progress */
-.progress-wrap{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:10px}
-.progress-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--purple),#A07EF0);transition:width .4s ease}
-/* Alert banners */
-.alert{background:var(--red-soft);border:1px solid var(--red);border-radius:var(--radius);padding:13px;margin-bottom:12px;display:flex;gap:10px}
-.alert i{color:var(--red);font-size:18px;flex-shrink:0;margin-top:1px}
-.alert-title{font-size:13px;font-weight:600;color:var(--red);margin-bottom:3px}
-.alert-body{font-size:12px;color:rgba(240,112,112,0.8);line-height:1.5}
-.notice{background:var(--amber-soft);border:1px solid var(--amber);border-radius:var(--radius);padding:13px;margin-bottom:12px;display:flex;gap:10px}
-.notice i{color:var(--amber);font-size:18px;flex-shrink:0;margin-top:1px}
-.notice-title{font-size:13px;font-weight:600;color:var(--amber);margin-bottom:3px}
-.notice-body{font-size:12px;color:rgba(240,160,80,0.8);line-height:1.5}
-/* Section labels */
-.section-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:16px 0 8px}
+.prog-wrap{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:9px}
+.prog-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--purple),#A07EF0)}
+
+/* Alerts */
+.alert{background:var(--rs);border:1px solid var(--red);border-radius:var(--r);padding:12px;margin-bottom:10px;display:flex;gap:9px}
+.alert i{color:var(--red);font-size:17px;flex-shrink:0;margin-top:1px}
+.alert-t{font-size:13px;font-weight:600;color:var(--red);margin-bottom:2px}
+.alert-b{font-size:12px;color:rgba(240,112,112,0.85);line-height:1.5}
+.notice{background:var(--as2);border:1px solid var(--amber);border-radius:var(--r);padding:12px;margin-bottom:10px;display:flex;gap:9px}
+.notice i{color:var(--amber);font-size:17px;flex-shrink:0;margin-top:1px}
+.notice-t{font-size:13px;font-weight:600;color:var(--amber);margin-bottom:2px}
+.notice-b{font-size:12px;color:rgba(240,160,80,0.85);line-height:1.5}
+
+/* Section label */
+.sec{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 7px}
+
 /* Search */
-.search-wrap{position:relative;margin-bottom:12px}
-.search-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:18px;pointer-events:none}
-.search-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:15px;padding:11px 14px 11px 38px;outline:none}
+.search-wrap{position:relative;margin-bottom:10px}
+.search-wrap i{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:17px;pointer-events:none}
+.search-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-size:15px;padding:10px 13px 10px 36px;outline:none}
 .search-input:focus{border-color:var(--purple)}
+
 /* Filter chips */
-.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:3px;margin-bottom:10px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex-shrink:0;font-size:12px;font-weight:500;padding:6px 12px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;white-space:nowrap}
-.chip.on{background:var(--purple-glow);border-color:var(--purple);color:var(--purple)}
+.chip.on{background:var(--ps);border-color:var(--purple);color:var(--purple)}
+
+/* Schedule */
+.sched-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.sched-item:last-child{border-bottom:none}
+.sched-num{width:22px;height:22px;border-radius:50%;background:var(--ps);border:1px solid var(--pb);color:var(--purple);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.sched-num.hot{background:var(--rs);border-color:var(--red);color:var(--red)}
+.sched-date{font-size:11px;color:var(--text3);margin-top:3px;white-space:nowrap}
+
 /* Chat */
-.chat-messages{display:flex;flex-direction:column;gap:10px;padding-bottom:12px;min-height:40px}
-.chat-bubble{padding:11px 14px;border-radius:var(--radius);font-size:14px;line-height:1.6;max-width:88%;white-space:pre-wrap;word-break:break-word}
-.bubble-user{background:var(--purple-glow);border:1px solid var(--purple-soft);color:var(--text);align-self:flex-end}
-.bubble-agent{background:var(--bg2);border:1px solid var(--border);color:var(--text);align-self:flex-start}
-.bubble-agent.loading{color:var(--text3);font-style:italic}
-.chat-input-wrap{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);padding:12px 16px calc(12px + var(--safe-bot))}
-.chat-input-row{display:flex;gap:8px}
-.chat-input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:15px;padding:11px 14px;outline:none}
-.chat-input:focus{border-color:var(--purple)}
-.chat-send{width:44px;height:44px;background:var(--purple);border:none;border-radius:var(--radius-sm);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-wrap{display:flex;flex-direction:column;height:100%}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px 14px 8px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.bubble{padding:11px 13px;border-radius:var(--r);font-size:14px;line-height:1.65;max-width:90%;white-space:pre-wrap;word-break:break-word}
+.bubble-u{background:var(--ps);border:1px solid var(--pb);color:var(--text);align-self:flex-end}
+.bubble-a{background:var(--bg2);border:1px solid var(--border);color:var(--text);align-self:flex-start}
+.bubble-a.loading{color:var(--text3);font-style:italic}
+.chat-bottom{flex-shrink:0;background:var(--bg);border-top:1px solid var(--border);padding:10px 14px calc(10px + var(--safe-bot))}
+.quick-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.quick-row::-webkit-scrollbar{display:none}
+.qchip{flex-shrink:0;font-size:12px;padding:6px 11px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;white-space:nowrap}
+.qchip:active{background:var(--ps);border-color:var(--purple);color:var(--purple)}
+.input-row{display:flex;gap:8px}
+.chat-in{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-size:15px;padding:11px 13px;outline:none}
+.chat-in:focus{border-color:var(--purple)}
+.chat-send{width:44px;height:44px;background:var(--purple);border:none;border-radius:var(--r2);color:#fff;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .chat-send:disabled{opacity:.4}
-.quick-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.quick-chips::-webkit-scrollbar{display:none}
-.qchip{flex-shrink:0;font-size:12px;padding:7px 12px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;white-space:nowrap}
-.qchip:active{background:var(--purple-glow);border-color:var(--purple)}
+
 /* Jira row */
-.jira-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.jira-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
 .jira-row:last-child{border-bottom:none}
-.jira-key{font-size:10px;font-weight:600;color:var(--text3);min-width:50px;padding-top:2px}
+.jira-key{font-size:10px;font-weight:600;color:var(--text3);min-width:48px;padding-top:2px}
 .jira-info{flex:1;min-width:0}
 .jira-title{font-size:13px;font-weight:500;line-height:1.3}
-.jira-author{font-size:12px;color:var(--text2);margin-top:2px}
-/* Due date pill */
-.due{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px}
-.due-urgent{background:var(--red-soft);color:var(--red)}
-.due-soon{background:var(--amber-soft);color:var(--amber)}
-.due-ok{background:var(--green-soft);color:var(--green)}
-.due-future{background:var(--bg3);color:var(--text3)}
-/* Currently reading */
-.now-reading{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--green);border-radius:var(--radius);padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
-.now-reading-icon{font-size:28px;flex-shrink:0}
-.now-reading-title{font-size:15px;font-weight:600}
-.now-reading-sub{font-size:13px;color:var(--text2);margin-top:2px}
-/* Plan step */
-.plan-step{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start}
-.plan-step:last-child{border-bottom:none}
-.step-num{width:24px;height:24px;border-radius:50%;background:var(--purple-glow);border:1px solid var(--purple-soft);color:var(--purple);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.step-num.hot{background:var(--red-soft);border-color:var(--red);color:var(--red)}
+.jira-author{font-size:11px;color:var(--text3);margin-top:1px}
+.due{font-size:10px;font-weight:600;padding:2px 6px;border-radius:10px;white-space:nowrap}
+.due-urg{background:var(--rs);color:var(--red)}
+.due-soon{background:var(--as2);color:var(--amber)}
+.due-ok{background:var(--gs);color:var(--green)}
+.due-far{background:var(--bg3);color:var(--text3)}
+
+/* Now reading */
+.now-reading{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--green);border-radius:var(--r);padding:14px;margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.nr-icon{font-size:26px;flex-shrink:0}
+.nr-title{font-size:15px;font-weight:600}
+.nr-sub{font-size:12px;color:var(--text2);margin-top:2px}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="app-header">
-    <div class="app-header-inner">
-      <div class="app-icon">📚</div>
-      <div>
-        <div class="app-name">Cups of Fiction</div>
-        <div class="app-sub">Reading Agent · CFI · BookBuddy</div>
-      </div>
+  <div class="header">
+    <div class="header-icon">📚</div>
+    <div>
+      <div class="header-name">Cups of Fiction</div>
+      <div class="header-sub">Personal Reading Assistant</div>
     </div>
+    <div class="header-date" id="hdate"></div>
   </div>
 
-  <div class="content" id="content">
+  <div class="content" id="main-content">
     <div class="panel on" id="p-home"></div>
-    <div class="panel" id="p-plan"></div>
+    <div class="panel" id="p-schedule"></div>
     <div class="panel" id="p-tbr"></div>
     <div class="panel" id="p-jira"></div>
-    <div class="panel" id="p-chat">
-      <div class="quick-chips" id="quick-chips"></div>
-      <div class="chat-messages" id="chat-msgs"></div>
-      <div class="chat-input-wrap">
-        <div class="chat-input-row">
-          <input class="chat-input" id="chat-in" placeholder="Ask about your reading…" autocomplete="off"/>
-          <button class="chat-send" id="chat-btn" onclick="sendChat()"><i class="ti ti-send"></i></button>
+    <div class="panel" id="p-chat" style="padding:0;height:100%">
+      <div class="chat-wrap">
+        <div class="chat-msgs" id="chat-msgs">
+          <div class="bubble bubble-a">Hey! 👋 I'm your Cups of Fiction reading assistant. I know your full TBR, your Jira schedule, and all your due dates.
+
+Ask me anything — "what should I read next?", "push my review deadline by 3 days", "I finished Metal Slinger", "draft my Goodreads review", or "am I on track this week?"</div>
+        </div>
+        <div class="chat-bottom">
+          <div class="quick-row" id="quick-row"></div>
+          <div class="input-row">
+            <input class="chat-in" id="chat-in" placeholder="Message your assistant…" autocomplete="off"/>
+            <button class="chat-send" id="chat-send" onclick="sendChat()"><i class="ti ti-send"></i></button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="tabbar">
-    <button class="tabbar-btn on" onclick="tab('home',this)"><i class="ti ti-home"></i>Home</button>
-    <button class="tabbar-btn" onclick="tab('plan',this)"><i class="ti ti-list-numbers"></i>Plan</button>
-    <button class="tabbar-btn" onclick="tab('tbr',this)"><i class="ti ti-books"></i>TBR</button>
-    <button class="tabbar-btn" onclick="tab('jira',this)"><i class="ti ti-brand-jira"></i>Jira</button>
-    <button class="tabbar-btn" onclick="tab('chat',this)"><i class="ti ti-message-chatbot"></i>Agent</button>
+    <button class="tbtn on" onclick="tab('home',this)"><i class="ti ti-home"></i>Home</button>
+    <button class="tbtn" onclick="tab('schedule',this)"><i class="ti ti-calendar"></i>Schedule</button>
+    <button class="tbtn" onclick="tab('tbr',this)"><i class="ti ti-books"></i>TBR</button>
+    <button class="tbtn" onclick="tab('jira',this)"><i class="ti ti-brand-jira"></i>Jira</button>
+    <button class="tbtn" onclick="tab('chat',this)"><i class="ti ti-message-chatbot"></i>Assistant</button>
   </div>
 </div>
 
 <script>
-const JIRA=[{"key":"CFI-1","title":"Dire Bound Series","status":"Posted","type":"Series/Standalone","author":"Sable Sorensen","due":"2026-05-23"},{"key":"CFI-2","title":"Dire Bound (Book 1)","status":"Posted","type":"Book","author":"","due":"2026-05-23"},{"key":"CFI-3","title":"Fury Bound (Book 2)","status":"Posted","type":"Book","author":"","due":"2026-05-23"},{"key":"CFI-4","title":"Riftborne and Ascended Series","status":"Awaiting Next Release","type":"Series/Standalone","author":"Bree Greenwich & Parker Lennox","due":"2027-01-16"},{"key":"CFI-5","title":"Riftborne (Riftborne Book 1)","status":"Film Review","type":"Book","author":"","due":"2027-01-16"},{"key":"CFI-6","title":"Duskbound (Riftborne Book 2)","status":"TO BE READ","type":"Book","author":"","due":"2027-01-16"},{"key":"CFI-7","title":"The Ascended (Ascended Book 1)","status":"TO BE READ","type":"Book","author":"","due":"2027-01-16"},{"key":"CFI-8","title":"Realmblade (Riftborne Book 3)","status":"TO BE READ","type":"Book","author":"","due":"2027-01-16"},{"key":"CFI-9","title":"The Midnight Library Series","status":"TO BE READ","type":"Series/Standalone","author":"Matt Haig","due":""},{"key":"CFI-10","title":"Midnight Library","status":"TO BE READ","type":"Book","author":"","due":""},{"key":"CFI-11","title":"Midnight Train","status":"TO BE READ","type":"Book","author":"","due":""},{"key":"CFI-12","title":"Fever Dream - Elsie Silver","status":"Posted","type":"Series/Standalone","author":"Elsie Silver","due":"2026-05-26"},{"key":"CFI-13","title":"Manhattan Ruthless Series","status":"Posted","type":"Series/Standalone","author":"Sadie Kincaid","due":"2026-06-13"},{"key":"CFI-14","title":"Made","status":"Posted","type":"Book","author":"","due":"2026-06-06"},{"key":"CFI-15","title":"Kings of Mafia Series","status":"Posted","type":"Series/Standalone","author":"Michelle Heard","due":"2026-05-28"},{"key":"CFI-16","title":"Vicious Devil - ARC","status":"Posted","type":"Book","author":"","due":"2026-05-28"},{"key":"CFI-17","title":"Possessive Enemy - ARC","status":"Posted","type":"Book","author":"","due":"2026-05-14"},{"key":"CFI-18","title":"The Roommate Rules - ARC","status":"Posted","type":"Series/Standalone","author":"Brighton Walsh","due":"2026-05-16"},{"key":"CFI-19","title":"King of Gluttony","status":"Posted","type":"Series/Standalone","author":"Ana Huang","due":"2026-05-10"},{"key":"CFI-20","title":"Paper Rings","status":"Posted","type":"Series/Standalone","author":"Brittanee Nicole","due":"2026-06-02"},{"key":"CFI-21","title":"Metal Slinger Series","status":"Reading In Progress","type":"Series/Standalone","author":"Rachel Schneider","due":"2026-06-14"},{"key":"CFI-22","title":"Metal Slinger","status":"Reading In Progress","type":"Book","author":"","due":"2026-06-14"},{"key":"CFI-23","title":"Light Wielder","status":"TO BE READ","type":"Book","author":"","due":"2026-06-21"},{"key":"CFI-24","title":"Vipers Series","status":"TO BE READ","type":"Series/Standalone","author":"Rina Kent","due":"2026-07-05"},{"key":"CFI-25","title":"Tempting Venom","status":"TO BE READ","type":"Book","author":"","due":"2026-07-05"},{"key":"CFI-26","title":"Moonfall Series","status":"TO BE READ","type":"Series/Standalone","author":"Sarah A. Parker","due":"2026-06-20"},{"key":"CFI-27","title":"When the Moon Hatched","status":"TO BE READ","type":"Book","author":"","due":"2026-06-20"},{"key":"CFI-28","title":"The Ballad of Falling Dragons","status":"TO BE READ","type":"Book","author":"","due":"2026-06-20"},{"key":"CFI-29","title":"The Artisan Trilogy","status":"TO BE READ","type":"Series/Standalone","author":"Stacy McEwan","due":"2026-07-19"},{"key":"CFI-30","title":"A Forbidden Alchemy","status":"TO BE READ","type":"Book","author":"","due":"2026-07-19"},{"key":"CFI-31","title":"A Forsaken Prophecy","status":"TO BE READ","type":"Book","author":"","due":"2026-07-19"},{"key":"CFI-32","title":"The Heart Series","status":"TO BE READ","type":"Series/Standalone","author":"HM Wolfe","due":"2026-07-12"},{"key":"CFI-33","title":"Daggermouth","status":"TO BE READ","type":"Book","author":"","due":"2026-07-05"},{"key":"CFI-34","title":"Python","status":"TO BE READ","type":"Book","author":"","due":"2026-07-12"},{"key":"CFI-35","title":"Arcana Academy Series","status":"TO BE READ","type":"Series/Standalone","author":"Elise Kova","due":"2026-07-26"},{"key":"CFI-36","title":"Arcana Academy","status":"TO BE READ","type":"Book","author":"","due":"2026-07-21"},{"key":"CFI-37","title":"Prince of Swords","status":"TO BE READ","type":"Book","author":"","due":"2026-07-26"},{"key":"CFI-38","title":"The Mavericks Series","status":"TO BE READ","type":"Series/Standalone","author":"Kate Crew","due":"2026-07-19"},{"key":"CFI-39","title":"Sorrowsong University Series","status":"TO BE READ","type":"Series/Standalone","author":"Autumn Woods","due":"2026-08-02"},{"key":"CFI-40","title":"Nightshade","status":"TO BE READ","type":"Book","author":"","due":"2026-07-28"},{"key":"CFI-41","title":"Daybreak","status":"TO BE READ","type":"Book","author":"","due":"2026-08-02"},{"key":"CFI-42","title":"Crowns of Nyaxia Series","status":"TO BE READ","type":"Series/Standalone","author":"Carissa Broadbent","due":"2026-08-16"},{"key":"CFI-43","title":"The Songbird & the Heart of Stone","status":"TO BE READ","type":"Book","author":"","due":"2026-08-06"},{"key":"CFI-44","title":"The Fallen & the Kiss of Dusk","status":"TO BE READ","type":"Book","author":"","due":"2026-08-09"},{"key":"CFI-46","title":"The Lion and the Deathless Dark","status":"TO BE READ","type":"Book","author":"","due":"2026-08-16"},{"key":"CFI-47","title":"Slaying the Vampire Conqueror","status":"TO BE READ","type":"Book","author":"","due":"2026-08-03"},{"key":"CFI-48","title":"Fractured Empire","status":"TO BE READ","type":"Series/Standalone","author":"KL Mann","due":"2026-08-14"},{"key":"CFI-49","title":"The Shepherd King Duology","status":"TO BE READ","type":"Series/Standalone","author":"Rachel Gillig","due":"2026-08-23"},{"key":"CFI-50","title":"One Dark Window","status":"TO BE READ","type":"Book","author":"","due":"2026-08-23"},{"key":"CFI-51","title":"Two Twisted Crowns","status":"TO BE READ","type":"Book","author":"","due":"2026-08-23"},{"key":"CFI-52","title":"The Stonewater Kingdom Series","status":"TO BE READ","type":"Series/Standalone","author":"Rachel Gillig","due":"2026-09-06"},{"key":"CFI-53","title":"The Knight and the Moth","status":"TO BE READ","type":"Book","author":"","due":"2026-09-06"},{"key":"CFI-54","title":"The Knave and the Moon","status":"TO BE READ","type":"Book","author":"","due":"2026-09-06"},{"key":"CFI-55","title":"Silvercloak Saga","status":"TO BE READ","type":"Series/Standalone","author":"LK Steven","due":"2026-09-20"},{"key":"CFI-56","title":"Silvercloak","status":"TO BE READ","type":"Book","author":"","due":"2026-09-15"},{"key":"CFI-57","title":"Turncloak","status":"TO BE READ","type":"Book","author":"","due":"2026-09-20"},{"key":"CFI-58","title":"Empyrean Novella","status":"TO BE READ","type":"Series/Standalone","author":"Rebecca Yarros","due":"2026-10-04"},{"key":"CFI-59","title":"Sarah J Maas Universe","status":"TO BE READ","type":"Series/Standalone","author":"Sarah J Maas","due":"2027-01-17"},{"key":"CFI-60","title":"House of Sky and Breath","status":"TO BE READ","type":"Book","author":"Sarah J Maas","due":"2026-10-20"},{"key":"CFI-61","title":"House of Flame and Shadow","status":"TO BE READ","type":"Book","author":"Sarah J Maas","due":"2026-10-27"},{"key":"CFI-62","title":"ACOTAR Book 6","status":"TO BE READ","type":"Book","author":"Sarah J Maas","due":"2026-11-01"},{"key":"CFI-63","title":"ACOTAR Book 7","status":"TO BE READ","type":"Book","author":"Sarah J Maas","due":"2027-01-17"},{"key":"CFI-64","title":"The Fall of the Crowned King","status":"TO BE READ","type":"Series/Standalone","author":"Amber V. Nicole","due":"2026-11-29"},{"key":"CFI-65","title":"Fae and Alchemy Book 3","status":"TO BE READ","type":"Series/Standalone","author":"Callie Hart","due":"2027-09-14"},{"key":"CFI-66","title":"The Wolf King Series","status":"TO BE READ","type":"Series/Standalone","author":"Lauren Palphreyman","due":"2026-11-24"},{"key":"CFI-67","title":"The Wolf King","status":"TO BE READ","type":"Book","author":"","due":"2026-11-05"},{"key":"CFI-68","title":"The Night Prince","status":"TO BE READ","type":"Book","author":"","due":"2026-11-10"},{"key":"CFI-69","title":"The Wolf Queen","status":"TO BE READ","type":"Book","author":"","due":"2026-11-24"},{"key":"CFI-70","title":"Cross Check","status":"TO BE READ","type":"Series/Standalone","author":"Chelsea Curto","due":"2026-06-28"},{"key":"CFI-71","title":"Starside Series","status":"TO BE READ","type":"Series/Standalone","author":"Alex Aster","due":"2026-11-22"},{"key":"CFI-72","title":"Starside","status":"TO BE READ","type":"Book","author":"","due":"2026-11-17"},{"key":"CFI-73","title":"Stormside","status":"TO BE READ","type":"Book","author":"","due":"2026-11-22"},{"key":"CFI-74","title":"Edge of Glass Series","status":"TO BE READ","type":"Series/Standalone","author":"Britteny Arena","due":"2026-08-22"},{"key":"CFI-75","title":"A Dance of Lies","status":"TO BE READ","type":"Book","author":"","due":"2026-08-22"},{"key":"CFI-76","title":"To Dance With Death","status":"TO BE READ","type":"Book","author":"","due":"2026-08-22"},{"key":"CFI-77","title":"Cadence of the Fallen Series","status":"DNF","type":"Series/Standalone","author":"Hazel S. Wilkes","due":"2026-06-09"},{"key":"CFI-78","title":"A Requiem for Fallen Stars","status":"DNF","type":"Book","author":"","due":"2026-06-09"},{"key":"CFI-79","title":"A Ballad for the Broken (ARC)","status":"DNF","type":"Book","author":"","due":"2026-06-09"},{"key":"CFI-80","title":"A Composition of Scars Novella","status":"DNF","type":"Book","author":"","due":"2026-06-09"},{"key":"CFI-82","title":"Every Single Broken Piece","status":"ARC Received","type":"Series/Standalone","author":"Michelle Heard","due":"2026-07-21"},{"key":"CFI-83","title":"Kings of Mafia - Saved by a God (ARC)","status":"TO BE READ","type":"Series/Standalone","author":"Michelle Heard","due":"2026-06-22"},{"key":"CFI-84","title":"The Correspondent","status":"Write Review","type":"Series/Standalone","author":"Virginia Evans","due":"2026-06-14"}];
+// ─── CONFIG ───────────────────────────────────────────────────
+const WORKER = 'https://cups-of-fiction.cupsoffiction.workers.dev';
+const TOKEN  = 'cupsoffiction';
+
+// ─── DATA ─────────────────────────────────────────────────────
+const JIRA=[{"key":"CFI-1","title":"Dire Bound Series","status":"Posted","author":"Sable Sorensen","due":"2026-05-23"},{"key":"CFI-2","title":"Dire Bound (Book 1)","status":"Posted","author":"","due":"2026-05-23"},{"key":"CFI-3","title":"Fury Bound (Book 2)","status":"Posted","author":"","due":"2026-05-23"},{"key":"CFI-4","title":"Riftborne and Ascended Series","status":"Awaiting Next Release","author":"Bree Greenwich & Parker Lennox","due":"2027-01-16"},{"key":"CFI-6","title":"Duskbound (Riftborne Book 2)","status":"TO BE READ","author":"","due":"2027-01-16"},{"key":"CFI-7","title":"The Ascended (Ascended Book 1)","status":"TO BE READ","author":"","due":"2027-01-16"},{"key":"CFI-9","title":"The Midnight Library Series","status":"TO BE READ","author":"Matt Haig","due":""},{"key":"CFI-12","title":"Fever Dream","status":"Posted","author":"Elsie Silver","due":"2026-05-26"},{"key":"CFI-13","title":"Manhattan Ruthless Series","status":"Posted","author":"Sadie Kincaid","due":"2026-06-13"},{"key":"CFI-15","title":"Kings of Mafia Series","status":"Posted","author":"Michelle Heard","due":"2026-05-28"},{"key":"CFI-18","title":"The Roommate Rules - ARC","status":"Posted","author":"Brighton Walsh","due":"2026-05-16"},{"key":"CFI-19","title":"King of Gluttony","status":"Posted","author":"Ana Huang","due":"2026-05-10"},{"key":"CFI-20","title":"Paper Rings","status":"Posted","author":"Brittanee Nicole","due":"2026-06-02"},{"key":"CFI-21","title":"Metal Slinger Series","status":"Reading In Progress","author":"Rachel Schneider","due":"2026-06-14"},{"key":"CFI-22","title":"Metal Slinger","status":"Reading In Progress","author":"Rachel Schneider","due":"2026-06-14"},{"key":"CFI-24","title":"Vipers Series","status":"TO BE READ","author":"Rina Kent","due":"2026-07-05"},{"key":"CFI-26","title":"Moonfall Series","status":"TO BE READ","author":"Sarah A. Parker","due":"2026-06-20"},{"key":"CFI-27","title":"When the Moon Hatched","status":"TO BE READ","author":"","due":"2026-06-20"},{"key":"CFI-28","title":"The Ballad of Falling Dragons","status":"TO BE READ","author":"","due":"2026-06-20"},{"key":"CFI-29","title":"The Artisan Trilogy","status":"TO BE READ","author":"Stacy McEwan","due":"2026-07-19"},{"key":"CFI-30","title":"A Forbidden Alchemy","status":"TO BE READ","author":"","due":"2026-07-19"},{"key":"CFI-32","title":"The Heart Series","status":"TO BE READ","author":"HM Wolfe","due":"2026-07-12"},{"key":"CFI-35","title":"Arcana Academy Series","status":"TO BE READ","author":"Elise Kova","due":"2026-07-26"},{"key":"CFI-38","title":"The Mavericks Series","status":"TO BE READ","author":"Kate Crew","due":"2026-07-19"},{"key":"CFI-39","title":"Sorrowsong University Series","status":"TO BE READ","author":"Autumn Woods","due":"2026-08-02"},{"key":"CFI-42","title":"Crowns of Nyaxia Series","status":"TO BE READ","author":"Carissa Broadbent","due":"2026-08-16"},{"key":"CFI-43","title":"The Songbird & the Heart of Stone","status":"TO BE READ","author":"","due":"2026-08-06"},{"key":"CFI-44","title":"The Fallen & the Kiss of Dusk","status":"TO BE READ","author":"","due":"2026-08-09"},{"key":"CFI-46","title":"The Lion and the Deathless Dark","status":"TO BE READ","author":"","due":"2026-08-16"},{"key":"CFI-47","title":"Slaying the Vampire Conqueror","status":"TO BE READ","author":"","due":"2026-08-03"},{"key":"CFI-49","title":"The Shepherd King Duology","status":"TO BE READ","author":"Rachel Gillig","due":"2026-08-23"},{"key":"CFI-52","title":"The Stonewater Kingdom Series","status":"TO BE READ","author":"Rachel Gillig","due":"2026-09-06"},{"key":"CFI-55","title":"Silvercloak Saga","status":"TO BE READ","author":"LK Steven","due":"2026-09-20"},{"key":"CFI-58","title":"Empyrean Novella","status":"TO BE READ","author":"Rebecca Yarros","due":"2026-10-04"},{"key":"CFI-59","title":"Sarah J Maas Universe","status":"TO BE READ","author":"Sarah J Maas","due":"2027-01-17"},{"key":"CFI-60","title":"House of Sky and Breath","status":"TO BE READ","author":"Sarah J Maas","due":"2026-10-20"},{"key":"CFI-61","title":"House of Flame and Shadow","status":"TO BE READ","author":"Sarah J Maas","due":"2026-10-27"},{"key":"CFI-62","title":"ACOTAR Book 6","status":"TO BE READ","author":"Sarah J Maas","due":"2026-11-01"},{"key":"CFI-64","title":"The Fall of the Crowned King","status":"TO BE READ","author":"Amber V. Nicole","due":"2026-11-29"},{"key":"CFI-66","title":"The Wolf King Series","status":"TO BE READ","author":"Lauren Palphreyman","due":"2026-11-24"},{"key":"CFI-70","title":"Cross Check","status":"TO BE READ","author":"Chelsea Curto","due":"2026-06-28"},{"key":"CFI-71","title":"Starside Series","status":"TO BE READ","author":"Alex Aster","due":"2026-11-22"},{"key":"CFI-74","title":"Edge of Glass Series","status":"TO BE READ","author":"Britteny Arena","due":"2026-08-22"},{"key":"CFI-77","title":"Cadence of the Fallen Series","status":"DNF","author":"Hazel S. Wilkes","due":""},{"key":"CFI-82","title":"Every Single Broken Piece","status":"ARC Received","author":"Michelle Heard","due":"2026-07-21"},{"key":"CFI-83","title":"Kings of Mafia - Saved by a God","status":"TO BE READ","author":"Michelle Heard","due":"2026-06-22"},{"key":"CFI-84","title":"The Correspondent","status":"Write Review","author":"Virginia Evans","due":"2026-06-14"}];
 
 const BOOKS=[{"title":"A Dance of Lies","author":"Brittney Arena","series":null,"pages":448,"year":2025},{"title":"A Day of Fallen Night","author":"Samantha Shannon","series":"The Roots of Chaos","volume":"prequel","pages":880,"year":2023},{"title":"A False Start","author":"Elsie Silver","series":null,"pages":384,"year":2024},{"title":"A Forbidden Alchemy","author":"Stacey McEwan","series":null,"pages":480,"year":2025},{"title":"A Good Girl's Guide to Murder","author":"Holly Jackson","series":null,"pages":432,"year":2023},{"title":"A Murder in Eight Cocktails","author":"Kelly Mullen","series":null,"pages":384,"year":2026},{"title":"Alchemised","author":"SenLinYu","series":null,"pages":1028,"year":2025},{"title":"Alchemy of Secrets","author":"Stephanie Garber","series":null,"pages":336,"year":2025},{"title":"Arcana Academy","author":"Elise Kova","series":"Arcana Academy","volume":"1","pages":553,"year":2025},{"title":"Babel","author":"Rebecca F. Kuang","series":null,"pages":544,"year":2022},{"title":"Behind the Net","author":"Stephanie Archer","series":null,"pages":426,"year":2023},{"title":"Bride","author":"Ali Hazelwood","series":null,"pages":399,"year":2024},{"title":"Children of Blood and Bone","author":"Tomi Adeyemi","series":"Legacy of Orïsha","volume":"1","pages":531,"year":2018},{"title":"Children of Fallen Gods","author":"Carissa Broadbent","series":"War of Lost Hearts","volume":"2","pages":624,"year":2025},{"title":"City of Lies and Legends","author":"Kayla Edwards","series":null,"pages":890,"year":2024},{"title":"City of Smoke and Brimstone","author":"Kayla Edwards","series":null,"pages":784,"year":2025},{"title":"Dark Age","author":"Pierce Brown","series":"Red Rising","volume":"5","pages":757,"year":2020},{"title":"Daughter of No Worlds","author":"Carissa Broadbent","series":"War of Lost Hearts","volume":"1","pages":528,"year":2025},{"title":"Dawn of the North","author":"Demi Winters","series":"The Ashen Series","volume":"3","pages":608,"year":2026},{"title":"Delightful Sins","author":"Lola King","series":null,"pages":574,"year":2023},{"title":"Divine Rivals","author":"Rebecca Ross","series":"Letters of Enchantment","volume":"1","pages":357,"year":2023},{"title":"Duskbound","author":"Parker Lennox","series":"Riftborne","volume":"2","pages":null,"year":2025},{"title":"Enigma","author":"RuNyx","series":null,"pages":464,"year":2025},{"title":"Fairydale","author":"Veronica Lancet","series":null,"pages":736,"year":2025},{"title":"Final Offer","author":"Lauren Asher","series":null,"pages":576,"year":2023},{"title":"Five Broken Blades","author":"Mai Corland","series":"The Broken Blades","volume":"1","pages":512,"year":2024},{"title":"Four Ruined Realms","author":"Mai Corland","series":"The Broken Blades","volume":"2","pages":432,"year":2025},{"title":"Gifted & Talented","author":"Olivie Blake","series":null,"pages":384,"year":2026},{"title":"Gild","author":"Raven Kennedy","series":"The Plated Prisoner","volume":"1","pages":416,"year":2022},{"title":"Golden Son","author":"Pierce Brown","series":"Red Rising","volume":"2","pages":442,"year":2015},{"title":"Handsome Devil","author":"L J. Shen","series":null,"pages":448,"year":2025},{"title":"Haunting Adeline","author":"H. D. Carlton","series":"Cat and Mouse","volume":"1","pages":624,"year":2024},{"title":"Heartless Beloved","author":"Lola King","series":null,"pages":522,"year":2023},{"title":"Hooked","author":"Emily McIntire","series":null,"pages":352,"year":2021},{"title":"House of Flame and Shadow","author":"Sarah J. Maas","series":"Crescent City","volume":"3","pages":834,"year":2024},{"title":"House of Sky and Breath","author":"Sarah J. Maas","series":"Crescent City","volume":"2","pages":816,"year":2023},{"title":"Hunting Adeline","author":"H. D. Carlton","series":"Cat and Mouse","volume":"2","pages":704,"year":2024},{"title":"Insatiable","author":"Leigh Rivers","series":"The Edge of Darkness","volume":"1","pages":412,"year":2023},{"title":"Iron Gold","author":"Pierce Brown","series":"Red Rising","volume":"4","pages":601,"year":2018},{"title":"Katabasis","author":"R.F. Kuang","series":null,"pages":560,"year":2025},{"title":"King of Envy","author":"Ana Huang","series":"Kings of Sin","volume":"3","pages":528,"year":2025},{"title":"King of Greed","author":"Ana Huang","series":"Kings of Sin","volume":"2","pages":341,"year":2023},{"title":"Kingdom of Claw","author":"Demi Winters","series":"The Ashen Series","volume":"2","pages":656,"year":2025},{"title":"Lawless God","author":"Lola King","series":null,"pages":622,"year":2024},{"title":"Light Bringer","author":"Pierce Brown","series":"Red Rising","volume":"6","pages":682,"year":2024},{"title":"Mate","author":"Ali Hazelwood","series":null,"pages":464,"year":2025},{"title":"Metal Slinger","author":"Rachel Schneider","series":"Metal Slinger","volume":"1","pages":480,"year":2026,"status":"Reading"},{"title":"Minbak","author":"Ela Lee","series":null,"pages":352,"year":2026},{"title":"Morning Star","author":"Pierce Brown","series":"Red Rising","volume":"3","pages":524,"year":2016},{"title":"Mother of Death and Dawn","author":"Carissa Broadbent","series":"War of Lost Hearts","volume":"3","pages":528,"year":2026},{"title":"Nightshade","author":"Autumn Woods","series":"Sorrowsong University","volume":"1","pages":416,"year":2025},{"title":"One Dark Window","author":"Rachel Gillig","series":"The Shepherd King","volume":"1","pages":421,"year":2022},{"title":"Psychotic Obsession","author":"Leigh Rivers","series":null,"pages":440,"year":2025},{"title":"Red City","author":"Marie Lu","series":null,"pages":432,"year":2025},{"title":"Red Flags and Rishtas","author":"Radhika Agrawal","series":null,"pages":230,"year":2024},{"title":"Red Queen","author":"Victoria Aveyard","series":"Red Queen","volume":"1","pages":388,"year":2015},{"title":"Red Rising","author":"Pierce Brown","series":"Red Rising","volume":"1","pages":400,"year":2014},{"title":"Restitution","author":"Leigh Rivers","series":"The Edge of Darkness","volume":"3","pages":524,"year":2024},{"title":"Rook and Rebel","author":"Kate Crew","series":"The Mavericks","volume":"1","pages":432,"year":2026},{"title":"Silvercloak","author":"L. K. Steven","series":"Silvercloak Saga","volume":"1","pages":464,"year":2025},{"title":"Slaying the Vampire Conqueror","author":"Carissa Broadbent","series":"Crowns of Nyaxia","volume":"2.5","pages":368,"year":2025,"urgent":true},{"title":"Starside","author":"Alex Aster","series":"Starside","volume":"1","pages":512,"year":2026},{"title":"The Ascended","author":"Parker Lennox","series":"Riftborne","volume":"3","pages":756,"year":2025},{"title":"The Book of Everlasting Things","author":"Aanchal Malhotra","series":null,"pages":480,"year":2022},{"title":"The Burning God","author":"R. F. Kuang","series":"The Poppy War","volume":"3","pages":622,"year":2021},{"title":"The City of Brass","author":"S. A. Chakraborty","series":"The Daevabad Trilogy","volume":"1","pages":534,"year":2018},{"title":"The Crimson Moth","author":"Kristen Ciccarelli","series":null,"pages":404,"year":2024},{"title":"The Dragon Republic (Collector's Ed)","author":"R. F. Kuang","series":"The Poppy War","volume":"2","pages":704,"year":2025},{"title":"The English Spy","author":"Daniel Silva","series":null,"pages":526,"year":2016},{"title":"The Fallen and the Kiss of Dusk","author":"Carissa Broadbent","series":"Crowns of Nyaxia","volume":"4","pages":576,"year":2025,"urgent":true},{"title":"The Final Empire","author":"Brandon Sanderson","series":"Mistborn","volume":"1","pages":647,"year":2009},{"title":"The Fine Print","author":"Lauren Asher","series":null,"pages":448,"year":2022},{"title":"The Front Runner","author":"Elsie Silver","series":null,"pages":336,"year":2024},{"title":"The Fury of the Gods","author":"John Gwynne","series":"The Bloodsworn Saga","volume":"3","pages":576,"year":2024},{"title":"The Hero of Ages","author":"Brandon Sanderson","series":"Mistborn","volume":"3","pages":748,"year":2010},{"title":"The Hunger of the Gods","author":"John Gwynne","series":"The Bloodsworn Saga","volume":"2","pages":636,"year":2023},{"title":"The Invisible Life of Addie LaRue","author":"V. E. Schwab","series":null,"pages":545,"year":2022},{"title":"The Kiss Thief","author":"L. J. Shen","series":null,"pages":336,"year":2023},{"title":"The Knight and the Moth","author":"Rachel Gillig","series":"The Stonewater Kingdom","volume":"3","pages":400,"year":2025},{"title":"The Love Hypothesis","author":"Ali Hazelwood","series":null,"pages":373,"year":2021},{"title":"The Midnight Library","author":"Matt Haig","series":null,"pages":316,"year":2020},{"title":"The Mindf*ck Series","author":"S. T. Abby","series":null,"pages":692,"year":2019},{"title":"The Nightingale","author":"Kristin Hannah","series":null,"pages":442,"year":2017},{"title":"The Palace of Illusions","author":"Chitra Banerjee Divakaruni","series":null,"pages":360,"year":2018},{"title":"The Priory of the Orange Tree","author":"Samantha Shannon","series":"The Roots of Chaos","volume":"1","pages":830,"year":2019},{"title":"The Quiet Revolution","author":"Donya Saberi","series":null,"pages":250,"year":2026},{"title":"The Rebel Witch","author":"Kristen Ciccarelli","series":null,"pages":464,"year":2025},{"title":"The Road of Bones","author":"Demi Winters","series":"The Ashen Series","volume":"1","pages":560,"year":2024},{"title":"The Shadow of the Gods","author":"John Gwynne","series":"The Bloodsworn Saga","volume":"1","pages":482,"year":2022},{"title":"The Songbird and the Heart of Stone","author":"Carissa Broadbent","series":"Crowns of Nyaxia","volume":"3","pages":448,"year":2024,"urgent":true},{"title":"The Striker","author":"Ana Huang","series":null,"pages":592,"year":2024},{"title":"The Well of Ascension","author":"Brandon Sanderson","series":"Mistborn","volume":"2","pages":781,"year":2009},{"title":"The Wolf King","author":"Lauren Palphreyman","series":"The Wolf King","volume":"1","pages":496,"year":2025},{"title":"Twisted Hate","author":"Ana Huang","series":"Twisted","volume":"3","pages":518,"year":2022},{"title":"Twisted Lies","author":"Ana Huang","series":"Twisted","volume":"4","pages":559,"year":2022},{"title":"Two Twisted Crowns","author":"Rachel Gillig","series":"The Shepherd King","volume":"2","pages":464,"year":2023},{"title":"Unsteady","author":"Peyton Corinne","series":null,"pages":359,"year":2024},{"title":"Vicious","author":"Victoria Schwab","series":"Villains","volume":"1","pages":343,"year":2014},{"title":"Voracious","author":"Leigh Rivers","series":"The Edge of Darkness","volume":"2","pages":398,"year":2023},{"title":"We Who Will Die","author":"Stacia Stark","series":null,"pages":432,"year":2025},{"title":"When the Moon Hatched","author":"Sarah A. Parker","series":"Moonfall","volume":"1","pages":563,"year":2024},{"title":"Zodiac Academy: The Awakening","author":"Caroline Peckham & Susanne Valenti","series":"Zodiac Academy","volume":"1","pages":512,"year":2024}];
 
-const CON_ORDER=["Slaying the Vampire Conqueror","The Songbird and the Heart of Stone","The Fallen and the Kiss of Dusk"];
-const now=new Date(),aug4=new Date('2026-08-04');
-const daysLeft=Math.round((aug4-now)/(1000*60*60*24));
-const monthsLeft=Math.max(1,12-now.getMonth());
-const toRemove=Math.max(0,BOOKS.length-20);
-const pace=Math.ceil(toRemove/monthsLeft);
-const conPages=BOOKS.filter(b=>CON_ORDER.includes(b.title)).reduce((s,b)=>s+(b.pages||0),0);
-let chatHistory=[],tbrFilter='all',tbrSearch='';
+// Mutable schedule — user can change via chat
+let SCHEDULE = [
+  {title:"Slaying the Vampire Conqueror",author:"Carissa Broadbent",due:"2026-08-03",type:"reading",note:"CoN #2.5 — must read before Aug 4"},
+  {title:"The Songbird and the Heart of Stone",author:"Carissa Broadbent",due:"2026-08-06",type:"reading",note:"CoN #3 — must read before Aug 4"},
+  {title:"The Fallen and the Kiss of Dusk",author:"Carissa Broadbent",due:"2026-08-09",type:"reading",note:"CoN #4 — must read before Aug 4"},
+  {title:"The Correspondent — All Reviews",author:"Virginia Evans",due:"2026-06-14",type:"review",note:"Website · Goodreads · Fable · Amazon · Instagram"},
+  {title:"Metal Slinger — All Reviews",author:"Rachel Schneider",due:"2026-06-21",type:"review",note:"Website · Goodreads · Fable · Amazon · Instagram"},
+  {title:"When the Moon Hatched",author:"Sarah A. Parker",due:"2026-06-20",type:"reading",note:"Moonfall Series"},
+  {title:"Cross Check",author:"Chelsea Curto",due:"2026-06-28",type:"reading",note:"CFI-70"},
+  {title:"Every Single Broken Piece (ARC)",author:"Michelle Heard",due:"2026-07-21",type:"reading",note:"ARC — priority"},
+];
 
-// Tab switching
-function tab(name,btn){
-  document.querySelectorAll('.tabbar-btn').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
-  btn.classList.add('on');
-  document.getElementById('p-'+name).classList.add('on');
-  document.getElementById('content').scrollTop=0;
-}
+const now = new Date();
+const aug4 = new Date('2026-08-04');
+const daysToAug4 = Math.round((aug4-now)/86400000);
+const monthsLeft = Math.max(1,12-now.getMonth());
+const toRemove = Math.max(0,BOOKS.length-20);
+const pace = Math.ceil(toRemove/monthsLeft);
+const URGENT_CON = ["Slaying the Vampire Conqueror","The Songbird and the Heart of Stone","The Fallen and the Kiss of Dusk"];
 
-// Due date badge
+let chatHistory = [];
+let tbrFilter = 'all';
+let tbrSearch = '';
+
+// ─── UTILS ────────────────────────────────────────────────────
 function dueBadge(dateStr){
   if(!dateStr)return'';
   const d=new Date(dateStr),diff=Math.round((d-now)/86400000);
-  if(diff<0)return`<span class="due due-urgent">overdue</span>`;
-  if(diff<=7)return`<span class="due due-urgent">${diff}d</span>`;
-  if(diff<=30)return`<span class="due due-soon">${Math.round(diff/7)}w</span>`;
-  if(diff<=90)return`<span class="due due-ok">${d.toLocaleDateString('en',{month:'short',day:'numeric'})}</span>`;
-  return`<span class="due due-future">${d.toLocaleDateString('en',{month:'short',year:'2-digit'})}</span>`;
+  if(diff<0)return`<span class="due due-urg">overdue</span>`;
+  if(diff<=3)return`<span class="due due-urg">${diff}d</span>`;
+  if(diff<=14)return`<span class="due due-soon">${diff}d</span>`;
+  if(diff<=60)return`<span class="due due-ok">${d.toLocaleDateString('en',{month:'short',day:'numeric'})}</span>`;
+  return`<span class="due due-far">${d.toLocaleDateString('en',{month:'short',year:'2-digit'})}</span>`;
 }
 
+function fmt(dateStr){
+  if(!dateStr)return'';
+  return new Date(dateStr).toLocaleDateString('en',{month:'short',day:'numeric'});
+}
+
+// ─── TAB SWITCHING ────────────────────────────────────────────
+function tab(name,btn){
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('p-'+name).classList.add('on');
+  if(name!=='chat')document.getElementById('main-content').style.overflow='auto';
+  else document.getElementById('main-content').style.overflow='hidden';
+}
+
+// ─── HOME ─────────────────────────────────────────────────────
 function renderHome(){
-  let h=`
-  <div class="now-reading">
-    <div class="now-reading-icon">📖</div>
-    <div>
-      <div class="now-reading-title">Metal Slinger</div>
-      <div class="now-reading-sub">Rachel Schneider · CFI-22 · due Jun 14</div>
-    </div>
-  </div>
-  <div class="alert">
-    <i class="ti ti-alert-triangle"></i>
-    <div>
-      <div class="alert-title">CoN #5 drops Aug 4 — ${daysLeft} days away</div>
-      <div class="alert-body">Read Slaying the Vampire Conqueror → Songbird → Fallen and the Kiss of Dusk first (~${conPages.toLocaleString()}p · ~${Math.round(conPages/daysLeft)}p/day)</div>
-    </div>
-  </div>
-  <div class="notice">
-    <i class="ti ti-pencil"></i>
-    <div>
-      <div class="notice-title">The Correspondent — Write Review</div>
-      <div class="notice-body">Virginia Evans · CFI-84 · due Jun 14. No reviews posted yet. Go to Agent tab to draft.</div>
-    </div>
-  </div>
-  <div class="metrics">
-    <div class="metric"><div class="metric-label">Physical TBR</div><div class="metric-value">${BOOKS.length}</div><div class="metric-note">Goal: ≤20 by Dec</div></div>
-    <div class="metric"><div class="metric-label">Must remove</div><div class="metric-value" style="color:var(--red)">${toRemove}</div><div class="metric-note">${pace}/month needed</div></div>
-    <div class="metric"><div class="metric-label">Jira issues</div><div class="metric-value">83</div><div class="metric-note">CFI project</div></div>
-    <div class="metric"><div class="metric-label">Days to CoN#5</div><div class="metric-value" style="color:var(--amber)">${daysLeft}</div><div class="metric-note">Aug 4 2026</div></div>
-  </div>
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <span style="font-size:13px;font-weight:600">TBR goal progress</span>
-      <span class="badge badge-amber">${toRemove} to go</span>
-    </div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:8px">${BOOKS.length} → 20 · ${monthsLeft} months left</div>
-    <div class="progress-wrap"><div class="progress-bar" style="width:${Math.min(100,Math.round(((BOOKS.length-toRemove)/BOOKS.length)*100))}%"></div></div>
-  </div>
-  <div class="section-label">Jira pipeline</div>`;
-  [['Write Review','CFI-84','The Correspondent','Virginia Evans','badge-amber'],
-   ['Reading In Progress','CFI-21/22','Metal Slinger Series','Rachel Schneider','badge-green'],
-   ['ARC Received','CFI-82','Every Single Broken Piece','Michelle Heard','badge-purple'],
-   ['Awaiting Next Release','CFI-4','Riftborne & Ascended','Bree Greenwich & Parker Lennox','badge-dim'],
-  ].forEach(([s,k,t,a,cl])=>{
-    h+=`<div class="card"><div class="card-row"><div><div class="card-title">${t}</div><div class="card-sub">${a} · ${k}</div></div><span class="badge ${cl}">${s}</span></div></div>`;
-  });
+  const overdue = JIRA.filter(j=>j.due&&new Date(j.due)<now&&j.status!=='Posted'&&j.status!=='DNF');
+  const dueSoon = JIRA.filter(j=>j.due&&new Date(j.due)>=now&&Math.round((new Date(j.due)-now)/86400000)<=7&&j.status!=='Posted'&&j.status!=='DNF');
+  const pct = Math.min(100,Math.round(((BOOKS.length-toRemove)/BOOKS.length)*100));
+
+  let h = '';
+
+  // Date header
+  document.getElementById('hdate').innerHTML = `${now.toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'})}<br><span style="color:var(--purple)">${daysToAug4}d to CoN#5</span>`;
+
+  // Currently reading
+  h += `<div class="now-reading"><div class="nr-icon">📖</div><div><div class="nr-title">Metal Slinger</div><div class="nr-sub">Rachel Schneider · due ${fmt('2026-06-14')}</div></div></div>`;
+
+  // Urgent alerts
+  if(overdue.length){
+    h+=`<div class="alert"><i class="ti ti-alert-triangle"></i><div><div class="alert-t">${overdue.length} overdue item${overdue.length>1?'s':''}</div><div class="alert-b">${overdue.map(j=>j.title).join(', ')}</div></div></div>`;
+  }
+  if(dueSoon.length){
+    h+=`<div class="notice"><i class="ti ti-clock"></i><div><div class="notice-t">Due within 7 days</div><div class="notice-b">${dueSoon.map(j=>`${j.title} (${fmt(j.due)})`).join(' · ')}</div></div></div>`;
+  }
+
+  // CoN alert
+  h+=`<div class="alert"><i class="ti ti-alert-triangle"></i><div><div class="alert-t">CoN #5 drops Aug 4 — ${daysToAug4} days</div><div class="alert-b">Read: Slaying the Vampire Conqueror → Songbird → Fallen and the Kiss of Dusk first</div></div></div>`;
+
+  // Metrics
+  h+=`<div class="metrics">
+    <div class="metric"><div class="m-label">Physical TBR</div><div class="m-value">${BOOKS.length}</div><div class="m-note">Goal: ≤20 by Dec</div></div>
+    <div class="metric"><div class="m-label">Remove</div><div class="m-value" style="color:var(--red)">${toRemove}</div><div class="m-note">${pace}/month needed</div></div>
+    <div class="metric"><div class="m-label">Write Review</div><div class="m-value" style="color:var(--amber)">1</div><div class="m-note">The Correspondent</div></div>
+    <div class="metric"><div class="m-label">Days to CoN#5</div><div class="m-value" style="color:var(--purple)">${daysToAug4}</div><div class="m-note">Aug 4 2026</div></div>
+  </div>`;
+
+  // Progress
+  h+=`<div class="card"><div class="card-row"><div><div class="card-title">TBR goal progress</div><div class="card-sub">${BOOKS.length} → 20 · ${toRemove} to remove</div></div><span class="badge b-amber">${toRemove} to go</span></div><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%"></div></div></div>`;
+
+  // Today's schedule
+  const todayItems = SCHEDULE.filter(s=>{
+    const d=new Date(s.due),diff=Math.round((d-now)/86400000);
+    return diff>=0&&diff<=7;
+  }).slice(0,4);
+
+  if(todayItems.length){
+    h+=`<div class="sec">Up this week</div><div class="card">`;
+    todayItems.forEach(s=>{
+      const icon=s.type==='review'?'✍️':'📚';
+      h+=`<div class="sched-item"><div class="sched-num ${new Date(s.due)<now?'hot':''}">${icon}</div><div style="flex:1"><div style="font-size:13px;font-weight:600">${s.title}</div><div style="font-size:12px;color:var(--text2);margin-top:1px">${s.note}</div></div>${dueBadge(s.due)}</div>`;
+    });
+    h+=`</div>`;
+  }
+
   document.getElementById('p-home').innerHTML=h;
 }
 
-function renderPlan(){
-  const conBooks=CON_ORDER.map(t=>BOOKS.find(b=>b.title===t)).filter(Boolean);
-  const seriesMulti={};
-  BOOKS.forEach(b=>{if(b.series){seriesMulti[b.series]=(seriesMulti[b.series]||0)+1;}});
-  const seriesBooks=BOOKS.filter(b=>b.series&&seriesMulti[b.series]>1&&!CON_ORDER.includes(b.title)&&b.status!=='Reading')
-    .sort((a,b)=>(a.series||'').localeCompare(b.series||'')||(parseFloat(a.volume||99)-parseFloat(b.volume||99)));
-  const standalones=BOOKS.filter(b=>(!b.series||seriesMulti[b.series]===1)&&!CON_ORDER.includes(b.title)&&b.status!=='Reading')
-    .sort((a,b)=>(a.pages||999)-(b.pages||999));
+// ─── SCHEDULE ─────────────────────────────────────────────────
+function renderSchedule(){
+  const sorted=[...SCHEDULE].sort((a,b)=>new Date(a.due)-new Date(b.due));
+  let h=`<div style="font-size:13px;color:var(--text2);margin-bottom:12px">Your upcoming reading & content schedule. Tell the assistant to make changes.</div>`;
 
-  let h=`<div class="alert"><i class="ti ti-alert-triangle"></i><div><div class="alert-title">Phase 1: Before Aug 4 (${daysLeft} days)</div><div class="alert-body">Finish these 3 CoN books before release day</div></div></div>`;
-  h+=`<div class="card">`;
-  [...conBooks,...seriesBooks,...standalones].slice(0,25).forEach((b,i)=>{
-    const hot=CON_ORDER.includes(b.title);
-    h+=`<div class="plan-step">
-      <div class="step-num ${hot?'hot':''}">${i+1}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:14px;font-weight:600;line-height:1.3">${b.title}</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:2px">${b.author}${b.pages?' · '+b.pages+'p':''}</div>
-        <div class="tags">
-          ${b.series?`<span class="badge badge-purple">${b.series}${b.volume?' #'+b.volume:''}</span>`:'<span class="badge badge-dim">standalone</span>'}
-          ${hot?'<span class="badge badge-red">before Aug 4</span>':''}
-          ${b.year>=2026?`<span class="badge badge-gold">${b.year}</span>`:''}
+  let lastMonth='';
+  sorted.forEach((s,i)=>{
+    const d=new Date(s.due);
+    const mo=d.toLocaleDateString('en',{month:'long',year:'numeric'});
+    if(mo!==lastMonth){h+=`<div class="sec">${mo}</div>`;lastMonth=mo;}
+    const overdue=d<now;
+    const isUrgent=URGENT_CON.includes(s.title);
+    h+=`<div class="card ${overdue?'urgent':isUrgent?'warn':''}">
+      <div class="card-row">
+        <div style="flex:1;min-width:0">
+          <div class="card-title">${s.title}</div>
+          <div class="card-sub">${s.author} · ${s.note}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+          ${dueBadge(s.due)}
+          <span class="badge ${s.type==='review'?'b-amber':'b-purple'}">${s.type==='review'?'✍️ review':'📚 reading'}</span>
         </div>
       </div>
     </div>`;
   });
-  h+=`</div>`;
-  document.getElementById('p-plan').innerHTML=h;
+
+  h+=`<div style="text-align:center;padding:16px 0;font-size:13px;color:var(--text3)">Tell the assistant to add, move or remove items</div>`;
+  document.getElementById('p-schedule').innerHTML=h;
 }
 
+// ─── TBR ──────────────────────────────────────────────────────
 function renderTBR(){
-  const chips=[['all','All ('+BOOKS.length+')'],['series','Series'],['standalone','Solo'],['short','<400p'],['new','2025+'],['urgent','🔥 Urgent']];
+  const filters=[['all',`All (${BOOKS.length})`],['series','Series'],['standalone','Solo'],['short','<400p'],['new','2025+'],['urgent','🔥 Urgent']];
   let books=[...BOOKS];
   if(tbrSearch)books=books.filter(b=>b.title.toLowerCase().includes(tbrSearch)||(b.author||'').toLowerCase().includes(tbrSearch)||(b.series||'').toLowerCase().includes(tbrSearch));
   if(tbrFilter==='series')books=books.filter(b=>b.series);
   else if(tbrFilter==='standalone')books=books.filter(b=>!b.series);
   else if(tbrFilter==='short')books=books.filter(b=>b.pages&&b.pages<400);
   else if(tbrFilter==='new')books=books.filter(b=>b.year>=2025);
-  else if(tbrFilter==='urgent')books=books.filter(b=>CON_ORDER.includes(b.title)||b.status==='Reading');
+  else if(tbrFilter==='urgent')books=books.filter(b=>URGENT_CON.includes(b.title)||b.status==='Reading');
 
-  let h=`<div class="chips">${chips.map(([v,l])=>`<button class="chip ${tbrFilter===v?'on':''}" onclick="setTbrFilter('${v}')">${l}</button>`).join('')}</div>`;
-  h+=`<div class="search-wrap"><i class="ti ti-search"></i><input class="search-input" type="search" placeholder="Search…" value="${tbrSearch}" oninput="setTbrSearch(this.value)"/></div>`;
-  h+=`<div style="font-size:12px;color:var(--text3);margin-bottom:10px">${books.length} book${books.length!==1?'s':''}</div>`;
+  let h=`<div class="chips">${filters.map(([v,l])=>`<button class="chip ${tbrFilter===v?'on':''}" onclick="setF('${v}')">${l}</button>`).join('')}</div>`;
+  h+=`<div class="search-wrap"><i class="ti ti-search"></i><input class="search-input" type="search" placeholder="Search books, authors, series…" value="${tbrSearch}" oninput="setS(this.value)"/></div>`;
+  h+=`<div style="font-size:12px;color:var(--text3);margin-bottom:9px">${books.length} book${books.length!==1?'s':''}</div>`;
+
   books.forEach(b=>{
-    const urgent=CON_ORDER.includes(b.title);
+    const urgent=URGENT_CON.includes(b.title);
     h+=`<div class="card ${urgent?'urgent':b.status==='Reading'?'active':''}">
-      <div style="font-size:15px;font-weight:600;line-height:1.3;margin-bottom:3px">${b.title}</div>
-      <div style="font-size:13px;color:var(--text2)">${b.author}${b.pages?' · '+b.pages+'p':''}</div>
+      <div class="card-title">${b.title}</div>
+      <div class="card-sub">${b.author}${b.pages?' · '+b.pages+'p':''}</div>
       <div class="tags">
-        ${b.series?`<span class="badge badge-purple">${b.series}${b.volume?' #'+b.volume:''}</span>`:'<span class="badge badge-dim">standalone</span>'}
-        ${b.status==='Reading'?'<span class="badge badge-green">reading now</span>':''}
-        ${urgent?'<span class="badge badge-red">before Aug 4</span>':''}
-        ${b.year>=2025?`<span class="badge badge-gold">${b.year}</span>`:''}
+        ${b.series?`<span class="badge b-purple">${b.series}${b.volume?' #'+b.volume:''}</span>`:'<span class="badge b-dim">standalone</span>'}
+        ${b.status==='Reading'?'<span class="badge b-green">reading now</span>':''}
+        ${urgent?'<span class="badge b-red">before Aug 4</span>':''}
+        ${b.year>=2025?`<span class="badge b-gold">${b.year}</span>`:''}
       </div>
     </div>`;
   });
   document.getElementById('p-tbr').innerHTML=h;
 }
 
-function setTbrFilter(f){tbrFilter=f;renderTBR();}
-function setTbrSearch(v){tbrSearch=v.toLowerCase();renderTBR();}
+function setF(f){tbrFilter=f;renderTBR();}
+function setS(v){tbrSearch=v.toLowerCase();renderTBR();}
 
+// ─── JIRA ─────────────────────────────────────────────────────
 function renderJira(){
   const groups=[
-    {label:'🔴 Write Review',items:JIRA.filter(j=>j.status==='Write Review'),cl:'action'},
-    {label:'📖 Reading',items:JIRA.filter(j=>j.status==='Reading In Progress'),cl:'active'},
-    {label:'📬 ARC Received',items:JIRA.filter(j=>j.status==='ARC Received'),cl:''},
-    {label:'⏳ Awaiting Release',items:JIRA.filter(j=>j.status==='Awaiting Next Release'),cl:''},
-    {label:'❌ DNF',items:JIRA.filter(j=>j.status==='DNF'),cl:''},
-    {label:'✅ Posted',items:JIRA.filter(j=>j.status==='Posted'),cl:''},
-    {label:'📚 To Be Read',items:JIRA.filter(j=>j.status==='TO BE READ'),cl:''},
+    {label:'🔴 Write Review',items:JIRA.filter(j=>j.status==='Write Review')},
+    {label:'📖 Reading',items:JIRA.filter(j=>j.status==='Reading In Progress')},
+    {label:'📬 ARC Received',items:JIRA.filter(j=>j.status==='ARC Received')},
+    {label:'⏳ Awaiting Release',items:JIRA.filter(j=>j.status==='Awaiting Next Release')},
+    {label:'✅ Posted',items:JIRA.filter(j=>j.status==='Posted')},
+    {label:'📚 To Be Read',items:JIRA.filter(j=>j.status==='TO BE READ')},
+    {label:'❌ DNF',items:JIRA.filter(j=>j.status==='DNF')},
   ];
   let h='';
   groups.forEach(g=>{
     if(!g.items.length)return;
-    h+=`<div class="section-label">${g.label} (${g.items.length})</div><div class="card">`;
+    h+=`<div class="sec">${g.label} (${g.items.length})</div><div class="card">`;
     g.items.forEach(j=>{
-      const author=j.author||(JIRA.find(p=>p.type==='Series/Standalone'&&j.title.startsWith(p.title.split(' ')[0]))?.author||'');
-      h+=`<div class="jira-row">
-        <div class="jira-key">${j.key}</div>
-        <div class="jira-info">
-          <div class="jira-title">${j.title}</div>
-          ${j.author?`<div class="jira-author">${j.author}</div>`:''}
-        </div>
-        ${dueBadge(j.due)}
-      </div>`;
+      h+=`<div class="jira-row"><div class="jira-key">${j.key}</div><div class="jira-info"><div class="jira-title">${j.title}</div>${j.author?`<div class="jira-author">${j.author}</div>`:''}</div>${dueBadge(j.due)}</div>`;
     });
     h+=`</div>`;
   });
   document.getElementById('p-jira').innerHTML=h;
 }
 
-function renderChat(){
+// ─── CHAT ─────────────────────────────────────────────────────
+function initChat(){
   const quicks=[
-    'What to read after Metal Slinger?',
-    'Draft all Correspondent reviews',
-    'Draft Metal Slinger Goodreads review',
-    'Write IG reel for Metal Slinger',
-    'Which books to rehome to hit 20?',
-    'Series reading orders',
-    'Other 2026 sequel releases?',
+    'What should I read next?',
+    'Am I on track this week?',
+    'I finished Metal Slinger',
+    'Push my Correspondent review by 3 days',
+    'Draft my Goodreads review for Metal Slinger',
+    'Write my IG reel script for Metal Slinger',
+    'Which books should I rehome?',
+    'Show me my full schedule',
   ];
-  document.getElementById('quick-chips').innerHTML=quicks.map(q=>`<button class="qchip" onclick="quickSend('${q}')">${q}</button>`).join('');
+  document.getElementById('quick-row').innerHTML=quicks.map(q=>`<button class="qchip" onclick="quickSend('${q.replace(/'/g,"\\'")}')">${q}</button>`).join('');
   document.getElementById('chat-in').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}});
 }
 
-async function quickSend(q){document.getElementById('chat-in').value=q;await sendChat();}
+async function quickSend(q){
+  document.getElementById('chat-in').value=q;
+  await sendChat();
+}
 
 async function sendChat(){
   const inp=document.getElementById('chat-in');
-  const q=inp.value.trim();if(!q)return;inp.value='';
+  const q=inp.value.trim();
+  if(!q)return;
+  inp.value='';
+
   const msgs=document.getElementById('chat-msgs');
   chatHistory.push({role:'user',content:q});
-  const ub=document.createElement('div');ub.className='chat-bubble bubble-user';ub.textContent=q;msgs.appendChild(ub);
-  const ab=document.createElement('div');ab.className='chat-bubble bubble-agent loading';ab.textContent='Thinking…';msgs.appendChild(ab);
+
+  const ub=document.createElement('div');ub.className='bubble bubble-u';ub.textContent=q;msgs.appendChild(ub);
+  const ab=document.createElement('div');ab.className='bubble bubble-a loading';ab.textContent='Thinking…';msgs.appendChild(ab);
   msgs.scrollTop=msgs.scrollHeight;
-  document.getElementById('chat-btn').disabled=true;
+  document.getElementById('chat-send').disabled=true;
 
-  const sys=`You are a personal reading assistant for Cups of Fiction (BookTok/Instagram reviewer @cupsoffiction).
+  // Build system prompt with full context
+  const sys=`You are a warm, organised personal reading assistant for Cups of Fiction (@cupsoffiction) — a BookTok content creator.
 
-JIRA CFI PROJECT (83 issues, with authors and due dates):
+TODAY: ${now.toDateString()}
+DAYS UNTIL CROWNS OF NYAXIA #5 (Aug 4): ${daysToAug4}
+
+CURRENT SCHEDULE (mutable — user can ask you to change it):
+${JSON.stringify(SCHEDULE)}
+
+JIRA PROJECT (cupsoffiction CFI — 83 issues):
 ${JSON.stringify(JIRA.map(j=>({k:j.key,t:j.title,s:j.status,a:j.author,d:j.due})))}
 
-BOOKBUDDY TBR (103 physical books):
-${JSON.stringify(BOOKS.map(b=>({t:b.title,a:b.author,s:b.series,v:b.volume,p:b.pages,y:b.year,st:b.status||'Unread',u:b.urgent})))}
+BOOKBUDDY TBR (${BOOKS.length} physical books):
+${JSON.stringify(BOOKS.map(b=>({t:b.title,a:b.author,s:b.series,v:b.volume,p:b.pages,y:b.year,st:b.status||'Unread'})))}
 
-KEY FACTS (today ${now.toDateString()}):
+KEY FACTS:
 - Currently reading: Metal Slinger by Rachel Schneider (CFI-22, due Jun 14)
-- URGENT REVIEW: The Correspondent by Virginia Evans (CFI-84, due Jun 14) — Write Review status
-- CoN #5 The Lion and the Deathless Dark releases Aug 4 (${daysLeft} days). Must read: Slaying the Vampire Conqueror (#2.5) → Songbird and the Heart of Stone (#3) → Fallen and the Kiss of Dusk (#4) first. CoN #1 & #2 already read.
-- TBR goal: ≤20 physical books by Dec 31 2026 (remove ${toRemove}, need ${pace}/month)
+- URGENT REVIEW: The Correspondent by Virginia Evans (CFI-84, due Jun 14) — no reviews posted yet
+- CoN #1 & #2 already read. Shelf has #2.5 Slaying the Vampire Conqueror, #3 Songbird, #4 Fallen and the Kiss of Dusk. Must finish all 3 before Aug 4.
+- TBR goal: ≤20 physical books by Dec 31 2026 (remove ${toRemove} books, need ${pace}/month)
 - Review platforms: Website, Goodreads, Fable, Amazon, Instagram (reels + posts)
-- Write reviews in warm, enthusiastic BookTok style as Cups of Fiction
-- Red Rising: books 1–6 on shelf. War of Lost Hearts: complete trilogy. Poppy War: book 1 read, books 2–3 on shelf.`;
+- Red Rising: all 6 books on shelf. War of Lost Hearts: complete trilogy. Poppy War: book 1 read, #2–3 on shelf.
+
+BEHAVIOUR:
+- When the user says they finished a book, acknowledge it warmly and remind them about reviews
+- When they ask to reschedule something, describe the updated schedule clearly
+- When they ask for a review draft, write in enthusiastic BookTok style as Cups of Fiction
+- When they ask what to read next, give a specific recommendation with reasoning
+- Be concise, warm, practical — like a knowledgeable friend who knows their reading life inside out
+- If asked about upcoming releases for series on their TBR, use your knowledge to answer`;
 
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:chatHistory})});
+    const res=await fetch(WORKER,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-app-token':TOKEN},
+      body:JSON.stringify({system:sys,messages:chatHistory})
+    });
     const data=await res.json();
     const reply=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
+    if(!reply)throw new Error(data.message||'No response');
     chatHistory.push({role:'assistant',content:reply});
-    ab.textContent=reply;ab.classList.remove('loading');
-  }catch(e){ab.textContent='Something went wrong — please try again.';ab.classList.remove('loading');}
-  document.getElementById('chat-btn').disabled=false;
+    ab.textContent=reply;
+    ab.classList.remove('loading');
+  }catch(e){
+    ab.textContent='⚠️ '+e.message+'\n\nMake sure your Cloudflare Worker is running at:\n'+WORKER;
+    ab.classList.remove('loading');
+  }
+
+  document.getElementById('chat-send').disabled=false;
   msgs.scrollTop=msgs.scrollHeight;
 }
 
-// Init
-renderHome();renderPlan();renderTBR();renderJira();renderChat();
+// ─── INIT ─────────────────────────────────────────────────────
+document.getElementById('main-content').style.overflow='auto';
+renderHome();
+renderSchedule();
+renderTBR();
+renderJira();
+initChat();
 </script>
 </body>
 </html>
