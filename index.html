@@ -499,20 +499,23 @@ async function sendChat(){
   msgs.scrollTop=msgs.scrollHeight;
   document.getElementById('chat-send').disabled=true;
 
-  // Build system prompt with full context
-  const sys=`You are a warm, organised personal reading assistant for Cups of Fiction (@cupsoffiction) — a BookTok content creator.
+  // Build system prompt — trimmed to reduce token count
+  const liveJira = LIVE_JIRA || JIRA;
+  const activeJira = liveJira.filter(j=>j.status!=='TO BE READ'&&j.status!=='Posted');
+  const sys=`You are a warm reading assistant for Cups of Fiction (@cupsoffiction), a BookTok creator.
+TODAY: ${now.toDateString()} | ${daysToAug4} days until CoN #5 (Aug 4)
 
-TODAY: ${now.toDateString()}
-DAYS UNTIL CROWNS OF NYAXIA #5 (Aug 4): ${daysToAug4}
+SCHEDULE: ${JSON.stringify(SCHEDULE)}
 
-CURRENT SCHEDULE (mutable — user can ask you to change it):
-${JSON.stringify(SCHEDULE)}
+JIRA ACTIVE (non-TBR): ${JSON.stringify(activeJira.map(j=>({k:j.key,t:j.title,s:j.status,a:j.author,d:j.due})))}
 
-JIRA PROJECT (cupsoffiction CFI — 83 issues):
-${JSON.stringify(JIRA.map(j=>({k:j.key,t:j.title,s:j.status,a:j.author,d:j.due})))}
-
-BOOKBUDDY TBR (${BOOKS.length} physical books):
-${JSON.stringify(BOOKS.map(b=>({t:b.title,a:b.author,s:b.series,v:b.volume,p:b.pages,y:b.year,st:b.status||'Unread'})))}
+TBR KEY BOOKS (103 total, physical):
+- Reading now: Metal Slinger by Rachel Schneider (due Jun 14)
+- CoN urgent (before Aug 4): Slaying the Vampire Conqueror #2.5 → Songbird and the Heart of Stone #3 → Fallen and the Kiss of Dusk #4
+- Red Rising: books 1-6 on shelf | War of Lost Hearts: complete trilogy | Poppy War: books 2-3 (book 1 read)
+- Bloodsworn Saga: complete trilogy | Ashen Series: complete trilogy | Mistborn: books 1-3
+- Crescent City: books 2-3 only | Kings of Sin: books 2-3 only | Twisted: books 3-4 only
+- Full TBR sample: ${JSON.stringify(BOOKS.slice(0,40).map(b=>({t:b.title,a:b.author,s:b.series,v:b.volume,p:b.pages})))}
 
 KEY FACTS:
 - Currently reading: Metal Slinger by Rachel Schneider (CFI-22, due Jun 14)
