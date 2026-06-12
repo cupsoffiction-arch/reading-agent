@@ -303,8 +303,9 @@ function tab(name,btn){
 
 // ─── HOME ─────────────────────────────────────────────────────
 function renderHome(){
-  const overdue = JIRA.filter(j=>j.due&&new Date(j.due)<now&&j.status!=='Posted'&&j.status!=='DNF');
-  const dueSoon = JIRA.filter(j=>j.due&&new Date(j.due)>=now&&Math.round((new Date(j.due)-now)/86400000)<=7&&j.status!=='Posted'&&j.status!=='DNF');
+  const activeJiraData = LIVE_JIRA || JIRA;
+  const overdue = activeJiraData.filter(j=>j.due&&new Date(j.due)<now&&j.status!=='Posted'&&j.status!=='DNF');
+  const dueSoon = activeJiraData.filter(j=>j.due&&new Date(j.due)>=now&&Math.round((new Date(j.due)-now)/86400000)<=7&&j.status!=='Posted'&&j.status!=='DNF');
   const pct = Math.min(100,Math.round(((BOOKS.length-toRemove)/BOOKS.length)*100));
 
   let h = '';
@@ -326,11 +327,13 @@ function renderHome(){
   // CoN alert
   h+=`<div class="alert"><i class="ti ti-alert-triangle"></i><div><div class="alert-t">CoN #5 drops Aug 4 — ${daysToAug4} days</div><div class="alert-b">Read: Slaying the Vampire Conqueror → Songbird → Fallen and the Kiss of Dusk first</div></div></div>`;
 
-  // Metrics
+  // Live metrics from synced Jira
+  const writeReviewCount = activeJiraData.filter(j=>j.status==='Write Review'||j.status==='Film Review').length;
+  const arcCount = activeJiraData.filter(j=>j.status==='ARC Received').length;
   h+=`<div class="metrics">
     <div class="metric"><div class="m-label">Physical TBR</div><div class="m-value">${BOOKS.length}</div><div class="m-note">Goal: ≤20 by Dec</div></div>
     <div class="metric"><div class="m-label">Remove</div><div class="m-value" style="color:var(--red)">${toRemove}</div><div class="m-note">${pace}/month needed</div></div>
-    <div class="metric"><div class="m-label">Write Review</div><div class="m-value" style="color:var(--amber)">1</div><div class="m-note">The Correspondent</div></div>
+    <div class="metric"><div class="m-label">Reviews due</div><div class="m-value" style="color:var(--amber)">${writeReviewCount}</div><div class="m-note">${arcCount} ARC${arcCount!==1?'s':''} pending</div></div>
     <div class="metric"><div class="m-label">Days to CoN#5</div><div class="m-value" style="color:var(--purple)">${daysToAug4}</div><div class="m-note">Aug 4 2026</div></div>
   </div>`;
 
@@ -350,6 +353,18 @@ function renderHome(){
       h+=`<div class="sched-item"><div class="sched-num ${new Date(s.due)<now?'hot':''}">${icon}</div><div style="flex:1"><div style="font-size:13px;font-weight:600">${s.title}</div><div style="font-size:12px;color:var(--text2);margin-top:1px">${s.note}</div></div>${dueBadge(s.due)}</div>`;
     });
     h+=`</div>`;
+  }
+
+  // Live Jira pipeline — non-TBR, non-Posted items
+  const SKIP_STATUS = ['TO BE READ','Posted'];
+  const STATUS_CL = {'Write Review':'b-amber','Film Review':'b-amber','Reading In Progress':'b-green','ARC Received':'b-purple','Awaiting Next Release':'b-dim','DNF':'b-red'};
+  const pipeline = activeJiraData.filter(j=>!SKIP_STATUS.includes(j.status)&&j.type!=='Book');
+  if(pipeline.length){
+    h+=`<div class="sec">Jira pipeline</div>`;
+    pipeline.forEach(j=>{
+      const cl=STATUS_CL[j.status]||'b-dim';
+      h+=`<div class="card"><div class="card-row"><div><div class="card-title">${j.title}</div><div class="card-sub">${j.author?j.author+' · ':''}${j.key}${j.due?' · '+fmt(j.due):''}</div></div><span class="badge ${cl}">${j.status}</span></div></div>`;
+    });
   }
 
   document.getElementById('p-home').innerHTML=h;
