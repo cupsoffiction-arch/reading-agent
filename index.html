@@ -549,27 +549,27 @@ async function syncJira(){
       headers: { 'Content-Type': 'application/json', 'x-app-token': TOKEN },
       body: JSON.stringify({ action: 'jira_sync' })
     });
-    const data = await res.json();
-    if(!data.ok) throw new Error(data.detail || data.error || 'Sync failed');
+    const rawText = await res.text();
+    let data;
+    try { data = JSON.parse(rawText); }
+    catch(e) { throw new Error('Non-JSON response: ' + rawText.slice(0,300)); }
+
+    if(!data.ok) throw new Error(JSON.stringify(data).slice(0,400));
 
     LIVE_JIRA = data.issues;
     localStorage.setItem('jira_last_sync', Date.now().toString());
     localStorage.setItem('jira_cache', JSON.stringify(LIVE_JIRA));
 
-    // Re-render Jira tab and home with fresh data
     renderJira(LIVE_JIRA);
-    // Load cached Jira if available
-const cached = localStorage.getItem('jira_cache');
-if(cached){ try{ LIVE_JIRA = JSON.parse(cached); }catch(e){} }
-renderHome();
+    renderHome();
 
-    if(btn){ btn.innerHTML='<i class="ti ti-check" style="font-size:14px"></i>Synced!'; btn.disabled=false; }
-    setTimeout(()=>{ if(btn){ btn.innerHTML='<i class="ti ti-refresh" style="font-size:14px"></i>Sync Jira'; } }, 2000);
+    if(btn){ btn.innerHTML='<i class="ti ti-check" style="font-size:14px"></i>Synced ' + data.total + '!'; btn.disabled=false; }
+    setTimeout(()=>{ if(btn){ btn.innerHTML='<i class="ti ti-refresh" style="font-size:14px"></i>Sync Jira'; } }, 3000);
 
   } catch(e) {
     if(btn){ btn.innerHTML='<i class="ti ti-alert-circle" style="font-size:14px"></i>Failed'; btn.disabled=false; }
     setTimeout(()=>{ if(btn){ btn.innerHTML='<i class="ti ti-refresh" style="font-size:14px"></i>Sync Jira'; } }, 3000);
-    alert('Jira sync failed: ' + e.message);
+    alert('Jira sync error — full detail:\n\n' + e.message);
   }
 }
 
