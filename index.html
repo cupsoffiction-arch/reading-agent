@@ -515,9 +515,12 @@ function renderJira(data){
 
   const lastSync = localStorage.getItem('jira_last_sync');
   const syncAge = lastSync ? Math.round((Date.now()-parseInt(lastSync))/60000) : null;
-  let h=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+  let h=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
     <div style="font-size:12px;color:var(--text3)">${syncAge!==null?`Last synced ${syncAge} min ago`:'Static data — tap to sync'}</div>
     <button onclick="syncJira()" id="sync-btn" style="background:var(--purple);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:600;padding:7px 14px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="ti ti-refresh" style="font-size:14px"></i>Sync Jira</button>
+  </div>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+    <button onclick="sendTestNotification()" id="test-notif-btn" style="background:none;border:1px solid var(--border);border-radius:8px;color:var(--text2);font-size:12px;font-weight:500;padding:7px 14px;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="ti ti-bell" style="font-size:14px"></i>Send test notification</button>
   </div>`;
 
   STATUSES.forEach(s=>{
@@ -675,6 +678,33 @@ async function syncJira(){
     if(btn){ btn.innerHTML='<i class="ti ti-alert-circle" style="font-size:14px"></i>Failed'; btn.disabled=false; }
     setTimeout(()=>{ if(btn){ btn.innerHTML='<i class="ti ti-refresh" style="font-size:14px"></i>Sync Jira'; } }, 3000);
     alert('Jira sync error — full detail:\n\n' + e.message);
+  }
+}
+
+async function sendTestNotification(){
+  const btn = document.getElementById('test-notif-btn');
+  if(btn){ btn.innerHTML='<i class="ti ti-loader" style="font-size:14px"></i>Sending…'; btn.disabled=true; }
+
+  try{
+    const res = await fetch(WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-app-token': TOKEN },
+      body: JSON.stringify({ action: 'test_notification' })
+    });
+    const rawText = await res.text();
+    let data;
+    try { data = JSON.parse(rawText); }
+    catch(e) { throw new Error('Non-JSON response: ' + rawText.slice(0,300)); }
+
+    if(!data.ok) throw new Error(JSON.stringify(data).slice(0,400));
+
+    if(btn){ btn.innerHTML='<i class="ti ti-check" style="font-size:14px"></i>Sent! Check WhatsApp'; btn.disabled=false; }
+    setTimeout(()=>{ if(btn){ btn.innerHTML='<i class="ti ti-bell" style="font-size:14px"></i>Send test notification'; } }, 4000);
+
+  } catch(e) {
+    if(btn){ btn.innerHTML='<i class="ti ti-alert-circle" style="font-size:14px"></i>Failed'; btn.disabled=false; }
+    setTimeout(()=>{ if(btn){ btn.innerHTML='<i class="ti ti-bell" style="font-size:14px"></i>Send test notification'; } }, 3000);
+    alert('Test notification error — full detail:\n\n' + e.message);
   }
 }
 
