@@ -219,7 +219,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
         <div class="chat-msgs" id="chat-msgs">
           <div class="bubble bubble-a">Hey! 👋 I'm your Cups of Fiction reading assistant. I know your full TBR, your Jira schedule, and all your due dates.
 
-Ask me anything — "what should I read next?", "push my review deadline by 3 days", "I finished Metal Slinger", "draft my Goodreads review", or "am I on track this week?"</div>
+Ask me anything — "what should I read next?", "push my review deadline by 3 days", "I finished a book", "draft my Goodreads review", or "am I on track this week?"</div>
         </div>
         <div class="chat-bottom">
           <div class="quick-row" id="quick-row"></div>
@@ -249,7 +249,7 @@ const TOKEN  = 'cupsoffiction';
 // ─── DATA ─────────────────────────────────────────────────────
 const JIRA=[{"key":"CFI-1","title":"Dire Bound Series","status":"Posted","author":"Sable Sorensen","due":"2026-05-23"},{"key":"CFI-2","title":"Dire Bound (Book 1)","status":"Posted","author":"","due":"2026-05-23"},{"key":"CFI-3","title":"Fury Bound (Book 2)","status":"Posted","author":"","due":"2026-05-23"},{"key":"CFI-4","title":"Riftborne and Ascended Series","status":"Awaiting Next Release","author":"Bree Greenwich & Parker Lennox","due":"2027-01-16"},{"key":"CFI-6","title":"Duskbound (Riftborne Book 2)","status":"TO BE READ","author":"","due":"2027-01-16"},{"key":"CFI-7","title":"The Ascended (Ascended Book 1)","status":"TO BE READ","author":"","due":"2027-01-16"},{"key":"CFI-9","title":"The Midnight Library Series","status":"TO BE READ","author":"Matt Haig","due":""},{"key":"CFI-12","title":"Fever Dream","status":"Posted","author":"Elsie Silver","due":"2026-05-26"},{"key":"CFI-13","title":"Manhattan Ruthless Series","status":"Posted","author":"Sadie Kincaid","due":"2026-06-13"},{"key":"CFI-15","title":"Kings of Mafia Series","status":"Posted","author":"Michelle Heard","due":"2026-05-28"},{"key":"CFI-18","title":"The Roommate Rules - ARC","status":"Posted","author":"Brighton Walsh","due":"2026-05-16"},{"key":"CFI-19","title":"King of Gluttony","status":"Posted","author":"Ana Huang","due":"2026-05-10"},{"key":"CFI-20","title":"Paper Rings","status":"Posted","author":"Brittanee Nicole","due":"2026-06-02"},{"key":"CFI-21","title":"Metal Slinger Series","status":"Reading In Progress","author":"Rachel Schneider","due":"2026-06-14"},{"key":"CFI-22","title":"Metal Slinger","status":"Reading In Progress","author":"Rachel Schneider","due":"2026-06-14"},{"key":"CFI-24","title":"Vipers Series","status":"TO BE READ","author":"Rina Kent","due":"2026-07-05"},{"key":"CFI-26","title":"Moonfall Series","status":"TO BE READ","author":"Sarah A. Parker","due":"2026-06-20"},{"key":"CFI-27","title":"When the Moon Hatched","status":"TO BE READ","author":"","due":"2026-06-20"},{"key":"CFI-28","title":"The Ballad of Falling Dragons","status":"TO BE READ","author":"","due":"2026-06-20"},{"key":"CFI-29","title":"The Artisan Trilogy","status":"TO BE READ","author":"Stacy McEwan","due":"2026-07-19"},{"key":"CFI-30","title":"A Forbidden Alchemy","status":"TO BE READ","author":"","due":"2026-07-19"},{"key":"CFI-32","title":"The Heart Series","status":"TO BE READ","author":"HM Wolfe","due":"2026-07-12"},{"key":"CFI-35","title":"Arcana Academy Series","status":"TO BE READ","author":"Elise Kova","due":"2026-07-26"},{"key":"CFI-38","title":"The Mavericks Series","status":"TO BE READ","author":"Kate Crew","due":"2026-07-19"},{"key":"CFI-39","title":"Sorrowsong University Series","status":"TO BE READ","author":"Autumn Woods","due":"2026-08-02"},{"key":"CFI-42","title":"Crowns of Nyaxia Series","status":"TO BE READ","author":"Carissa Broadbent","due":"2026-08-16"},{"key":"CFI-43","title":"The Songbird & the Heart of Stone","status":"TO BE READ","author":"","due":"2026-08-06"},{"key":"CFI-44","title":"The Fallen & the Kiss of Dusk","status":"TO BE READ","author":"","due":"2026-08-09"},{"key":"CFI-46","title":"The Lion and the Deathless Dark","status":"TO BE READ","author":"","due":"2026-08-16"},{"key":"CFI-47","title":"Slaying the Vampire Conqueror","status":"TO BE READ","author":"","due":"2026-08-03"},{"key":"CFI-49","title":"The Shepherd King Duology","status":"TO BE READ","author":"Rachel Gillig","due":"2026-08-23"},{"key":"CFI-52","title":"The Stonewater Kingdom Series","status":"TO BE READ","author":"Rachel Gillig","due":"2026-09-06"},{"key":"CFI-55","title":"Silvercloak Saga","status":"TO BE READ","author":"LK Steven","due":"2026-09-20"},{"key":"CFI-58","title":"Empyrean Novella","status":"TO BE READ","author":"Rebecca Yarros","due":"2026-10-04"},{"key":"CFI-59","title":"Sarah J Maas Universe","status":"TO BE READ","author":"Sarah J Maas","due":"2027-01-17"},{"key":"CFI-60","title":"House of Sky and Breath","status":"TO BE READ","author":"Sarah J Maas","due":"2026-10-20"},{"key":"CFI-61","title":"House of Flame and Shadow","status":"TO BE READ","author":"Sarah J Maas","due":"2026-10-27"},{"key":"CFI-62","title":"ACOTAR Book 6","status":"TO BE READ","author":"Sarah J Maas","due":"2026-11-01"},{"key":"CFI-64","title":"The Fall of the Crowned King","status":"TO BE READ","author":"Amber V. Nicole","due":"2026-11-29"},{"key":"CFI-66","title":"The Wolf King Series","status":"TO BE READ","author":"Lauren Palphreyman","due":"2026-11-24"},{"key":"CFI-70","title":"Cross Check","status":"TO BE READ","author":"Chelsea Curto","due":"2026-06-28"},{"key":"CFI-71","title":"Starside Series","status":"TO BE READ","author":"Alex Aster","due":"2026-11-22"},{"key":"CFI-74","title":"Edge of Glass Series","status":"TO BE READ","author":"Britteny Arena","due":"2026-08-22"},{"key":"CFI-77","title":"Cadence of the Fallen Series","status":"DNF","author":"Hazel S. Wilkes","due":""},{"key":"CFI-82","title":"Every Single Broken Piece","status":"ARC Received","author":"Michelle Heard","due":"2026-07-21"},{"key":"CFI-83","title":"Kings of Mafia - Saved by a God","status":"TO BE READ","author":"Michelle Heard","due":"2026-06-22"},{"key":"CFI-84","title":"The Correspondent","status":"Write Review","author":"Virginia Evans","due":"2026-06-14"}];
 
-const BOOKS=[{"title":"A Dance of Lies","author":"Brittney Arena","series":null,"pages":448,"year":2025},{"title":"A Day of Fallen Night","author":"Samantha Shannon","series":"The Roots of Chaos","volume":"prequel","pages":880,"year":2023},{"title":"A False Start","author":"Elsie Silver","series":null,"pages":384,"year":2024},{"title":"A Forbidden Alchemy","author":"Stacey McEwan","series":null,"pages":480,"year":2025},{"title":"A Good Girl's Guide to Murder","author":"Holly Jackson","series":null,"pages":432,"year":2023},{"title":"A Murder in Eight Cocktails","author":"Kelly Mullen","series":null,"pages":384,"year":2026},{"title":"Alchemised","author":"SenLinYu","series":null,"pages":1028,"year":2025},{"title":"Alchemy of Secrets","author":"Stephanie Garber","series":null,"pages":336,"year":2025},{"title":"Arcana Academy","author":"Elise Kova","series":"Arcana Academy","volume":"1","pages":553,"year":2025},{"title":"Babel","author":"Rebecca F. Kuang","series":null,"pages":544,"year":2022},{"title":"Behind the Net","author":"Stephanie Archer","series":null,"pages":426,"year":2023},{"title":"Bride","author":"Ali Hazelwood","series":null,"pages":399,"year":2024},{"title":"Children of Blood and Bone","author":"Tomi Adeyemi","series":"Legacy of Orïsha","volume":"1","pages":531,"year":2018},{"title":"Children of Fallen Gods","author":"Carissa Broadbent","series":"War of Lost Hearts","volume":"2","pages":624,"year":2025},{"title":"City of Lies and Legends","author":"Kayla Edwards","series":null,"pages":890,"year":2024},{"title":"City of Smoke and Brimstone","author":"Kayla Edwards","series":null,"pages":784,"year":2025},{"title":"Dark Age","author":"Pierce Brown","series":"Red Rising","volume":"5","pages":757,"year":2020},{"title":"Daughter of No Worlds","author":"Carissa Broadbent","series":"War of Lost Hearts","volume":"1","pages":528,"year":2025},{"title":"Dawn of the North","author":"Demi Winters","series":"The Ashen Series","volume":"3","pages":608,"year":2026},{"title":"Delightful Sins","author":"Lola King","series":null,"pages":574,"year":2023},{"title":"Divine Rivals","author":"Rebecca Ross","series":"Letters of Enchantment","volume":"1","pages":357,"year":2023},{"title":"Duskbound","author":"Parker Lennox","series":"Riftborne","volume":"2","pages":null,"year":2025},{"title":"Enigma","author":"RuNyx","series":null,"pages":464,"year":2025},{"title":"Fairydale","author":"Veronica Lancet","series":null,"pages":736,"year":2025},{"title":"Final Offer","author":"Lauren Asher","series":null,"pages":576,"year":2023},{"title":"Five Broken Blades","author":"Mai Corland","series":"The Broken Blades","volume":"1","pages":512,"year":2024},{"title":"Four Ruined Realms","author":"Mai Corland","series":"The Broken Blades","volume":"2","pages":432,"year":2025},{"title":"Gifted & Talented","author":"Olivie Blake","series":null,"pages":384,"year":2026},{"title":"Gild","author":"Raven Kennedy","series":"The Plated Prisoner","volume":"1","pages":416,"year":2022},{"title":"Golden Son","author":"Pierce Brown","series":"Red Rising","volume":"2","pages":442,"year":2015},{"title":"Handsome Devil","author":"L J. Shen","series":null,"pages":448,"year":2025},{"title":"Haunting Adeline","author":"H. D. Carlton","series":"Cat and Mouse","volume":"1","pages":624,"year":2024},{"title":"Heartless Beloved","author":"Lola King","series":null,"pages":522,"year":2023},{"title":"Hooked","author":"Emily McIntire","series":null,"pages":352,"year":2021},{"title":"House of Flame and Shadow","author":"Sarah J. Maas","series":"Crescent City","volume":"3","pages":834,"year":2024},{"title":"House of Sky and Breath","author":"Sarah J. Maas","series":"Crescent City","volume":"2","pages":816,"year":2023},{"title":"Hunting Adeline","author":"H. D. Carlton","series":"Cat and Mouse","volume":"2","pages":704,"year":2024},{"title":"Insatiable","author":"Leigh Rivers","series":"The Edge of Darkness","volume":"1","pages":412,"year":2023},{"title":"Iron Gold","author":"Pierce Brown","series":"Red Rising","volume":"4","pages":601,"year":2018},{"title":"Katabasis","author":"R.F. Kuang","series":null,"pages":560,"year":2025},{"title":"King of Envy","author":"Ana Huang","series":"Kings of Sin","volume":"3","pages":528,"year":2025},{"title":"King of Greed","author":"Ana Huang","series":"Kings of Sin","volume":"2","pages":341,"year":2023},{"title":"Kingdom of Claw","author":"Demi Winters","series":"The Ashen Series","volume":"2","pages":656,"year":2025},{"title":"Lawless God","author":"Lola King","series":null,"pages":622,"year":2024},{"title":"Light Bringer","author":"Pierce Brown","series":"Red Rising","volume":"6","pages":682,"year":2024},{"title":"Mate","author":"Ali Hazelwood","series":null,"pages":464,"year":2025},{"title":"Metal Slinger","author":"Rachel Schneider","series":"Metal Slinger","volume":"1","pages":480,"year":2026,"status":"Reading"},{"title":"Minbak","author":"Ela Lee","series":null,"pages":352,"year":2026},{"title":"Morning Star","author":"Pierce Brown","series":"Red Rising","volume":"3","pages":524,"year":2016},{"title":"Mother of Death and Dawn","author":"Carissa Broadbent","series":"War of Lost Hearts","volume":"3","pages":528,"year":2026},{"title":"Nightshade","author":"Autumn Woods","series":"Sorrowsong University","volume":"1","pages":416,"year":2025},{"title":"One Dark Window","author":"Rachel Gillig","series":"The Shepherd King","volume":"1","pages":421,"year":2022},{"title":"Psychotic Obsession","author":"Leigh Rivers","series":null,"pages":440,"year":2025},{"title":"Red City","author":"Marie Lu","series":null,"pages":432,"year":2025},{"title":"Red Flags and Rishtas","author":"Radhika Agrawal","series":null,"pages":230,"year":2024},{"title":"Red Queen","author":"Victoria Aveyard","series":"Red Queen","volume":"1","pages":388,"year":2015},{"title":"Red Rising","author":"Pierce Brown","series":"Red Rising","volume":"1","pages":400,"year":2014},{"title":"Restitution","author":"Leigh Rivers","series":"The Edge of Darkness","volume":"3","pages":524,"year":2024},{"title":"Rook and Rebel","author":"Kate Crew","series":"The Mavericks","volume":"1","pages":432,"year":2026},{"title":"Silvercloak","author":"L. K. Steven","series":"Silvercloak Saga","volume":"1","pages":464,"year":2025},{"title":"Slaying the Vampire Conqueror","author":"Carissa Broadbent","series":"Crowns of Nyaxia","volume":"2.5","pages":368,"year":2025,"urgent":true},{"title":"Starside","author":"Alex Aster","series":"Starside","volume":"1","pages":512,"year":2026},{"title":"The Ascended","author":"Parker Lennox","series":"Riftborne","volume":"3","pages":756,"year":2025},{"title":"The Book of Everlasting Things","author":"Aanchal Malhotra","series":null,"pages":480,"year":2022},{"title":"The Burning God","author":"R. F. Kuang","series":"The Poppy War","volume":"3","pages":622,"year":2021},{"title":"The City of Brass","author":"S. A. Chakraborty","series":"The Daevabad Trilogy","volume":"1","pages":534,"year":2018},{"title":"The Crimson Moth","author":"Kristen Ciccarelli","series":null,"pages":404,"year":2024},{"title":"The Dragon Republic (Collector's Ed)","author":"R. F. Kuang","series":"The Poppy War","volume":"2","pages":704,"year":2025},{"title":"The English Spy","author":"Daniel Silva","series":null,"pages":526,"year":2016},{"title":"The Fallen and the Kiss of Dusk","author":"Carissa Broadbent","series":"Crowns of Nyaxia","volume":"4","pages":576,"year":2025,"urgent":true},{"title":"The Final Empire","author":"Brandon Sanderson","series":"Mistborn","volume":"1","pages":647,"year":2009},{"title":"The Fine Print","author":"Lauren Asher","series":null,"pages":448,"year":2022},{"title":"The Front Runner","author":"Elsie Silver","series":null,"pages":336,"year":2024},{"title":"The Fury of the Gods","author":"John Gwynne","series":"The Bloodsworn Saga","volume":"3","pages":576,"year":2024},{"title":"The Hero of Ages","author":"Brandon Sanderson","series":"Mistborn","volume":"3","pages":748,"year":2010},{"title":"The Hunger of the Gods","author":"John Gwynne","series":"The Bloodsworn Saga","volume":"2","pages":636,"year":2023},{"title":"The Invisible Life of Addie LaRue","author":"V. E. Schwab","series":null,"pages":545,"year":2022},{"title":"The Kiss Thief","author":"L. J. Shen","series":null,"pages":336,"year":2023},{"title":"The Knight and the Moth","author":"Rachel Gillig","series":"The Stonewater Kingdom","volume":"3","pages":400,"year":2025},{"title":"The Love Hypothesis","author":"Ali Hazelwood","series":null,"pages":373,"year":2021},{"title":"The Midnight Library","author":"Matt Haig","series":null,"pages":316,"year":2020},{"title":"The Mindf*ck Series","author":"S. T. Abby","series":null,"pages":692,"year":2019},{"title":"The Nightingale","author":"Kristin Hannah","series":null,"pages":442,"year":2017},{"title":"The Palace of Illusions","author":"Chitra Banerjee Divakaruni","series":null,"pages":360,"year":2018},{"title":"The Priory of the Orange Tree","author":"Samantha Shannon","series":"The Roots of Chaos","volume":"1","pages":830,"year":2019},{"title":"The Quiet Revolution","author":"Donya Saberi","series":null,"pages":250,"year":2026},{"title":"The Rebel Witch","author":"Kristen Ciccarelli","series":null,"pages":464,"year":2025},{"title":"The Road of Bones","author":"Demi Winters","series":"The Ashen Series","volume":"1","pages":560,"year":2024},{"title":"The Shadow of the Gods","author":"John Gwynne","series":"The Bloodsworn Saga","volume":"1","pages":482,"year":2022},{"title":"The Songbird and the Heart of Stone","author":"Carissa Broadbent","series":"Crowns of Nyaxia","volume":"3","pages":448,"year":2024,"urgent":true},{"title":"The Striker","author":"Ana Huang","series":null,"pages":592,"year":2024},{"title":"The Well of Ascension","author":"Brandon Sanderson","series":"Mistborn","volume":"2","pages":781,"year":2009},{"title":"The Wolf King","author":"Lauren Palphreyman","series":"The Wolf King","volume":"1","pages":496,"year":2025},{"title":"Twisted Hate","author":"Ana Huang","series":"Twisted","volume":"3","pages":518,"year":2022},{"title":"Twisted Lies","author":"Ana Huang","series":"Twisted","volume":"4","pages":559,"year":2022},{"title":"Two Twisted Crowns","author":"Rachel Gillig","series":"The Shepherd King","volume":"2","pages":464,"year":2023},{"title":"Unsteady","author":"Peyton Corinne","series":null,"pages":359,"year":2024},{"title":"Vicious","author":"Victoria Schwab","series":"Villains","volume":"1","pages":343,"year":2014},{"title":"Voracious","author":"Leigh Rivers","series":"The Edge of Darkness","volume":"2","pages":398,"year":2023},{"title":"We Who Will Die","author":"Stacia Stark","series":null,"pages":432,"year":2025},{"title":"When the Moon Hatched","author":"Sarah A. Parker","series":"Moonfall","volume":"1","pages":563,"year":2024},{"title":"Zodiac Academy: The Awakening","author":"Caroline Peckham & Susanne Valenti","series":"Zodiac Academy","volume":"1","pages":512,"year":2024}];
+const BOOKS=[{"title":"A Dance of Lies","author":"Brittney Arena","series":null,"pages":448,"year":2025},{"title":"A Day of Fallen Night","author":"Samantha Shannon","series":"The Roots of Chaos","volume":"prequel","pages":880,"year":2023},{"title":"A False Start","author":"Elsie Silver","series":null,"pages":384,"year":2024},{"title":"A Forbidden Alchemy","author":"Stacey McEwan","series":null,"pages":480,"year":2025},{"title":"A Good Girl's Guide to Murder","author":"Holly Jackson","series":null,"pages":432,"year":2023},{"title":"A Murder in Eight Cocktails","author":"Kelly Mullen","series":null,"pages":384,"year":2026},{"title":"Alchemised","author":"SenLinYu","series":null,"pages":1028,"year":2025},{"title":"Alchemy of Secrets","author":"Stephanie Garber","series":null,"pages":336,"year":2025},{"title":"Arcana Academy","author":"Elise Kova","series":"Arcana Academy","volume":"1","pages":553,"year":2025},{"title":"Babel","author":"Rebecca F. Kuang","series":null,"pages":544,"year":2022},{"title":"Behind the Net","author":"Stephanie Archer","series":null,"pages":426,"year":2023},{"title":"Bride","author":"Ali Hazelwood","series":null,"pages":399,"year":2024},{"title":"Children of Blood and Bone","author":"Tomi Adeyemi","series":"Legacy of Orïsha","volume":"1","pages":531,"year":2018},{"title":"Children of Fallen Gods","author":"Carissa Broadbent","series":"War of Lost Hearts","volume":"2","pages":624,"year":2025},{"title":"City of Lies and Legends","author":"Kayla Edwards","series":null,"pages":890,"year":2024},{"title":"City of Smoke and Brimstone","author":"Kayla Edwards","series":null,"pages":784,"year":2025},{"title":"Dark Age","author":"Pierce Brown","series":"Red Rising","volume":"5","pages":757,"year":2020},{"title":"Daughter of No Worlds","author":"Carissa Broadbent","series":"War of Lost Hearts","volume":"1","pages":528,"year":2025},{"title":"Dawn of the North","author":"Demi Winters","series":"The Ashen Series","volume":"3","pages":608,"year":2026},{"title":"Delightful Sins","author":"Lola King","series":null,"pages":574,"year":2023},{"title":"Divine Rivals","author":"Rebecca Ross","series":"Letters of Enchantment","volume":"1","pages":357,"year":2023},{"title":"Duskbound","author":"Parker Lennox","series":"Riftborne","volume":"2","pages":null,"year":2025},{"title":"Enigma","author":"RuNyx","series":null,"pages":464,"year":2025},{"title":"Fairydale","author":"Veronica Lancet","series":null,"pages":736,"year":2025},{"title":"Final Offer","author":"Lauren Asher","series":null,"pages":576,"year":2023},{"title":"Five Broken Blades","author":"Mai Corland","series":"The Broken Blades","volume":"1","pages":512,"year":2024},{"title":"Four Ruined Realms","author":"Mai Corland","series":"The Broken Blades","volume":"2","pages":432,"year":2025},{"title":"Gifted & Talented","author":"Olivie Blake","series":null,"pages":384,"year":2026},{"title":"Gild","author":"Raven Kennedy","series":"The Plated Prisoner","volume":"1","pages":416,"year":2022},{"title":"Golden Son","author":"Pierce Brown","series":"Red Rising","volume":"2","pages":442,"year":2015},{"title":"Handsome Devil","author":"L J. Shen","series":null,"pages":448,"year":2025},{"title":"Haunting Adeline","author":"H. D. Carlton","series":"Cat and Mouse","volume":"1","pages":624,"year":2024},{"title":"Heartless Beloved","author":"Lola King","series":null,"pages":522,"year":2023},{"title":"Hooked","author":"Emily McIntire","series":null,"pages":352,"year":2021},{"title":"House of Flame and Shadow","author":"Sarah J. Maas","series":"Crescent City","volume":"3","pages":834,"year":2024},{"title":"House of Sky and Breath","author":"Sarah J. Maas","series":"Crescent City","volume":"2","pages":816,"year":2023},{"title":"Hunting Adeline","author":"H. D. Carlton","series":"Cat and Mouse","volume":"2","pages":704,"year":2024},{"title":"Insatiable","author":"Leigh Rivers","series":"The Edge of Darkness","volume":"1","pages":412,"year":2023},{"title":"Iron Gold","author":"Pierce Brown","series":"Red Rising","volume":"4","pages":601,"year":2018},{"title":"Katabasis","author":"R.F. Kuang","series":null,"pages":560,"year":2025},{"title":"King of Envy","author":"Ana Huang","series":"Kings of Sin","volume":"3","pages":528,"year":2025},{"title":"King of Greed","author":"Ana Huang","series":"Kings of Sin","volume":"2","pages":341,"year":2023},{"title":"Kingdom of Claw","author":"Demi Winters","series":"The Ashen Series","volume":"2","pages":656,"year":2025},{"title":"Lawless God","author":"Lola King","series":null,"pages":622,"year":2024},{"title":"Light Bringer","author":"Pierce Brown","series":"Red Rising","volume":"6","pages":682,"year":2024},{"title":"Mate","author":"Ali Hazelwood","series":null,"pages":464,"year":2025},{"title":"Metal Slinger","author":"Rachel Schneider","series":"Metal Slinger","volume":"1","pages":480,"year":2026,"status":"Reading"},{"title":"Minbak","author":"Ela Lee","series":null,"pages":352,"year":2026},{"title":"Morning Star","author":"Pierce Brown","series":"Red Rising","volume":"3","pages":524,"year":2016},{"title":"Mother of Death and Dawn","author":"Carissa Broadbent","series":"War of Lost Hearts","volume":"3","pages":528,"year":2026},{"title":"Nightshade","author":"Autumn Woods","series":"Sorrowsong University","volume":"1","pages":416,"year":2025},{"title":"One Dark Window","author":"Rachel Gillig","series":"The Shepherd King","volume":"1","pages":421,"year":2022},{"title":"Psychotic Obsession","author":"Leigh Rivers","series":null,"pages":440,"year":2025},{"title":"Red City","author":"Marie Lu","series":null,"pages":432,"year":2025},{"title":"Red Flags and Rishtas","author":"Radhika Agrawal","series":null,"pages":230,"year":2024},{"title":"Red Queen","author":"Victoria Aveyard","series":"Red Queen","volume":"1","pages":388,"year":2015},{"title":"Red Rising","author":"Pierce Brown","series":"Red Rising","volume":"1","pages":400,"year":2014},{"title":"Restitution","author":"Leigh Rivers","series":"The Edge of Darkness","volume":"3","pages":524,"year":2024},{"title":"Rook and Rebel","author":"Kate Crew","series":"The Mavericks","volume":"1","pages":432,"year":2026},{"title":"Silvercloak","author":"L. K. Steven","series":"Silvercloak Saga","volume":"1","pages":464,"year":2025},{"title":"Slaying the Vampire Conqueror","author":"Carissa Broadbent","series":"Crowns of Nyaxia","volume":"2.5","pages":368,"year":2025},{"title":"Starside","author":"Alex Aster","series":"Starside","volume":"1","pages":512,"year":2026},{"title":"The Ascended","author":"Parker Lennox","series":"Riftborne","volume":"3","pages":756,"year":2025},{"title":"The Book of Everlasting Things","author":"Aanchal Malhotra","series":null,"pages":480,"year":2022},{"title":"The Burning God","author":"R. F. Kuang","series":"The Poppy War","volume":"3","pages":622,"year":2021},{"title":"The City of Brass","author":"S. A. Chakraborty","series":"The Daevabad Trilogy","volume":"1","pages":534,"year":2018},{"title":"The Crimson Moth","author":"Kristen Ciccarelli","series":null,"pages":404,"year":2024},{"title":"The Dragon Republic (Collector's Ed)","author":"R. F. Kuang","series":"The Poppy War","volume":"2","pages":704,"year":2025},{"title":"The English Spy","author":"Daniel Silva","series":null,"pages":526,"year":2016},{"title":"The Fallen and the Kiss of Dusk","author":"Carissa Broadbent","series":"Crowns of Nyaxia","volume":"4","pages":576,"year":2025},{"title":"The Final Empire","author":"Brandon Sanderson","series":"Mistborn","volume":"1","pages":647,"year":2009},{"title":"The Fine Print","author":"Lauren Asher","series":null,"pages":448,"year":2022},{"title":"The Front Runner","author":"Elsie Silver","series":null,"pages":336,"year":2024},{"title":"The Fury of the Gods","author":"John Gwynne","series":"The Bloodsworn Saga","volume":"3","pages":576,"year":2024},{"title":"The Hero of Ages","author":"Brandon Sanderson","series":"Mistborn","volume":"3","pages":748,"year":2010},{"title":"The Hunger of the Gods","author":"John Gwynne","series":"The Bloodsworn Saga","volume":"2","pages":636,"year":2023},{"title":"The Invisible Life of Addie LaRue","author":"V. E. Schwab","series":null,"pages":545,"year":2022},{"title":"The Kiss Thief","author":"L. J. Shen","series":null,"pages":336,"year":2023},{"title":"The Knight and the Moth","author":"Rachel Gillig","series":"The Stonewater Kingdom","volume":"3","pages":400,"year":2025},{"title":"The Love Hypothesis","author":"Ali Hazelwood","series":null,"pages":373,"year":2021},{"title":"The Midnight Library","author":"Matt Haig","series":null,"pages":316,"year":2020},{"title":"The Mindf*ck Series","author":"S. T. Abby","series":null,"pages":692,"year":2019},{"title":"The Nightingale","author":"Kristin Hannah","series":null,"pages":442,"year":2017},{"title":"The Palace of Illusions","author":"Chitra Banerjee Divakaruni","series":null,"pages":360,"year":2018},{"title":"The Priory of the Orange Tree","author":"Samantha Shannon","series":"The Roots of Chaos","volume":"1","pages":830,"year":2019},{"title":"The Quiet Revolution","author":"Donya Saberi","series":null,"pages":250,"year":2026},{"title":"The Rebel Witch","author":"Kristen Ciccarelli","series":null,"pages":464,"year":2025},{"title":"The Road of Bones","author":"Demi Winters","series":"The Ashen Series","volume":"1","pages":560,"year":2024},{"title":"The Shadow of the Gods","author":"John Gwynne","series":"The Bloodsworn Saga","volume":"1","pages":482,"year":2022},{"title":"The Songbird and the Heart of Stone","author":"Carissa Broadbent","series":"Crowns of Nyaxia","volume":"3","pages":448,"year":2024},{"title":"The Striker","author":"Ana Huang","series":null,"pages":592,"year":2024},{"title":"The Well of Ascension","author":"Brandon Sanderson","series":"Mistborn","volume":"2","pages":781,"year":2009},{"title":"The Wolf King","author":"Lauren Palphreyman","series":"The Wolf King","volume":"1","pages":496,"year":2025},{"title":"Twisted Hate","author":"Ana Huang","series":"Twisted","volume":"3","pages":518,"year":2022},{"title":"Twisted Lies","author":"Ana Huang","series":"Twisted","volume":"4","pages":559,"year":2022},{"title":"Two Twisted Crowns","author":"Rachel Gillig","series":"The Shepherd King","volume":"2","pages":464,"year":2023},{"title":"Unsteady","author":"Peyton Corinne","series":null,"pages":359,"year":2024},{"title":"Vicious","author":"Victoria Schwab","series":"Villains","volume":"1","pages":343,"year":2014},{"title":"Voracious","author":"Leigh Rivers","series":"The Edge of Darkness","volume":"2","pages":398,"year":2023},{"title":"We Who Will Die","author":"Stacia Stark","series":null,"pages":432,"year":2025},{"title":"When the Moon Hatched","author":"Sarah A. Parker","series":"Moonfall","volume":"1","pages":563,"year":2024},{"title":"Zodiac Academy: The Awakening","author":"Caroline Peckham & Susanne Valenti","series":"Zodiac Academy","volume":"1","pages":512,"year":2024}];
 
 // Mutable schedule — user can change via chat
 // Schedule is built dynamically from Jira after sync
@@ -286,12 +286,31 @@ function buildScheduleFromJira(issues) {
 }
 
 const now = new Date();
-const aug4 = new Date('2026-08-04');
-const daysToAug4 = Math.round((aug4-now)/86400000);
 const monthsLeft = Math.max(1,12-now.getMonth());
 const toRemove = Math.max(0,BOOKS.length-20);
 const pace = Math.ceil(toRemove/monthsLeft);
-const URGENT_CON = ["Slaying the Vampire Conqueror","The Songbird and the Heart of Stone","The Fallen and the Kiss of Dusk"];
+
+// Dynamic helpers — always reflect the latest synced Jira data
+function getActiveJira(){ return LIVE_JIRA || JIRA; }
+
+// The single nearest upcoming deadline across all active Jira issues
+function getNextDeadline(){
+  const issues = getActiveJira();
+  const upcoming = issues.filter(j=>j.due && new Date(j.due) >= now && j.status!=='Posted' && j.status!=='DNF');
+  upcoming.sort((a,b)=>new Date(a.due)-new Date(b.due));
+  return upcoming[0] || null;
+}
+
+// Titles of TBR books that are "TO BE READ" in Jira with a due date in the
+// next 21 days — i.e. priority reads building toward an upcoming release
+function getUrgentTitles(){
+  const issues = getActiveJira();
+  return issues.filter(j=>{
+    if(j.type!=='Book' || j.status!=='TO BE READ' || !j.due) return false;
+    const diff = Math.round((new Date(j.due)-now)/86400000);
+    return diff>=0 && diff<=21;
+  }).map(j=>j.title);
+}
 
 let chatHistory = [];
 let tbrFilter = 'all';
@@ -333,7 +352,12 @@ function renderHome(){
   let h = '';
 
   // Date header
-  document.getElementById('hdate').innerHTML = `${now.toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'})}<br><span style="color:var(--purple)">${daysToAug4}d to CoN#5</span>`;
+  const nextDl = getNextDeadline();
+  const dlDays = nextDl ? Math.round((new Date(nextDl.due)-now)/86400000) : null;
+  const dlLabel = nextDl ? `${nextDl.title.length>16?nextDl.title.slice(0,16)+'…':nextDl.title}` : '';
+  document.getElementById('hdate').innerHTML = nextDl
+    ? `${now.toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'})}<br><span style="color:var(--purple)">${dlDays}d: ${dlLabel}</span>`
+    : now.toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'});
 
   // Currently reading — live from Jira
   const readingNow = activeJiraData.filter(j=>j.status==='Reading In Progress'&&j.type!=='Book');
@@ -353,8 +377,11 @@ function renderHome(){
     h+=`<div class="notice"><i class="ti ti-clock"></i><div><div class="notice-t">Due within 7 days</div><div class="notice-b">${dueSoon.map(j=>`${j.title} (${fmt(j.due)})`).join(' · ')}</div></div></div>`;
   }
 
-  // CoN alert
-  h+=`<div class="alert"><i class="ti ti-alert-triangle"></i><div><div class="alert-t">CoN #5 drops Aug 4 — ${daysToAug4} days</div><div class="alert-b">Read: Slaying the Vampire Conqueror → Songbird → Fallen and the Kiss of Dusk first</div></div></div>`;
+  // Next deadline alert — fully dynamic
+  if(nextDl){
+    const urgentTitles = getUrgentTitles();
+    h+=`<div class="alert"><i class="ti ti-alert-triangle"></i><div><div class="alert-t">${nextDl.title} — ${dlDays} day${dlDays!==1?'s':''} away</div><div class="alert-b">${urgentTitles.length ? 'Priority reads: '+urgentTitles.join(' → ') : `${nextDl.author?nextDl.author+' · ':''}due ${fmt(nextDl.due)}`}</div></div></div>`;
+  }
 
   // Live metrics from synced Jira
   const writeReviewCount = activeJiraData.filter(j=>j.status==='Write Review'||j.status==='Film Review').length;
@@ -363,7 +390,7 @@ function renderHome(){
     <div class="metric"><div class="m-label">Physical TBR</div><div class="m-value">${BOOKS.length}</div><div class="m-note">Goal: ≤20 by Dec</div></div>
     <div class="metric"><div class="m-label">Remove</div><div class="m-value" style="color:var(--red)">${toRemove}</div><div class="m-note">${pace}/month needed</div></div>
     <div class="metric"><div class="m-label">Reviews due</div><div class="m-value" style="color:var(--amber)">${writeReviewCount}</div><div class="m-note">${arcCount} ARC${arcCount!==1?'s':''} pending</div></div>
-    <div class="metric"><div class="m-label">Days to CoN#5</div><div class="m-value" style="color:var(--purple)">${daysToAug4}</div><div class="m-note">Aug 4 2026</div></div>
+    <div class="metric"><div class="m-label">Next deadline</div><div class="m-value" style="color:var(--purple)">${dlDays!==null?dlDays:'—'}</div><div class="m-note">${nextDl?nextDl.title.slice(0,22):'None scheduled'}</div></div>
   </div>`;
 
   // Progress
@@ -401,6 +428,7 @@ function renderHome(){
 
 // ─── SCHEDULE ─────────────────────────────────────────────────
 function renderSchedule(){
+  const urgentTitles = getUrgentTitles();
   const sorted=[...SCHEDULE].sort((a,b)=>new Date(a.due)-new Date(b.due));
   let h=`<div style="font-size:13px;color:var(--text2);margin-bottom:12px">Your upcoming reading & content schedule. Tell the assistant to make changes.</div>`;
 
@@ -410,7 +438,7 @@ function renderSchedule(){
     const mo=d.toLocaleDateString('en',{month:'long',year:'numeric'});
     if(mo!==lastMonth){h+=`<div class="sec">${mo}</div>`;lastMonth=mo;}
     const overdue=d<now;
-    const isUrgent=URGENT_CON.includes(s.title);
+    const isUrgent=urgentTitles.includes(s.title);
     h+=`<div class="card ${overdue?'urgent':isUrgent?'warn':''}">
       <div class="card-row">
         <div style="flex:1;min-width:0">
@@ -431,28 +459,29 @@ function renderSchedule(){
 
 // ─── TBR ──────────────────────────────────────────────────────
 function renderTBR(){
-  const filters=[['all',`All (${BOOKS.length})`],['series','Series'],['standalone','Solo'],['short','<400p'],['new','2025+'],['urgent','🔥 Urgent']];
+  const urgentTitles = getUrgentTitles();
+  const filters=[['all',`All (${BOOKS.length})`],['series','Series'],['standalone','Solo'],['short','<400p'],['new','2025+'],['urgent','🔥 Priority']];
   let books=[...BOOKS];
   if(tbrSearch)books=books.filter(b=>b.title.toLowerCase().includes(tbrSearch)||(b.author||'').toLowerCase().includes(tbrSearch)||(b.series||'').toLowerCase().includes(tbrSearch));
   if(tbrFilter==='series')books=books.filter(b=>b.series);
   else if(tbrFilter==='standalone')books=books.filter(b=>!b.series);
   else if(tbrFilter==='short')books=books.filter(b=>b.pages&&b.pages<400);
   else if(tbrFilter==='new')books=books.filter(b=>b.year>=2025);
-  else if(tbrFilter==='urgent')books=books.filter(b=>URGENT_CON.includes(b.title)||b.status==='Reading');
+  else if(tbrFilter==='urgent')books=books.filter(b=>urgentTitles.includes(b.title)||b.status==='Reading');
 
   let h=`<div class="chips">${filters.map(([v,l])=>`<button class="chip ${tbrFilter===v?'on':''}" onclick="setF('${v}')">${l}</button>`).join('')}</div>`;
   h+=`<div class="search-wrap"><i class="ti ti-search"></i><input class="search-input" type="search" placeholder="Search books, authors, series…" value="${tbrSearch}" oninput="setS(this.value)"/></div>`;
   h+=`<div style="font-size:12px;color:var(--text3);margin-bottom:9px">${books.length} book${books.length!==1?'s':''}</div>`;
 
   books.forEach(b=>{
-    const urgent=URGENT_CON.includes(b.title);
+    const urgent=urgentTitles.includes(b.title);
     h+=`<div class="card ${urgent?'urgent':b.status==='Reading'?'active':''}">
       <div class="card-title">${b.title}</div>
       <div class="card-sub">${b.author}${b.pages?' · '+b.pages+'p':''}</div>
       <div class="tags">
         ${b.series?`<span class="badge b-purple">${b.series}${b.volume?' #'+b.volume:''}</span>`:'<span class="badge b-dim">standalone</span>'}
         ${b.status==='Reading'?'<span class="badge b-green">reading now</span>':''}
-        ${urgent?'<span class="badge b-red">before Aug 4</span>':''}
+        ${urgent?'<span class="badge b-red">priority read</span>':''}
         ${b.year>=2025?`<span class="badge b-gold">${b.year}</span>`:''}
       </div>
     </div>`;
@@ -552,8 +581,14 @@ async function sendChat(){
   const currentlyReading = liveJira.filter(j=>j.status==='Reading In Progress'&&j.type!=='Book');
   const reviewsDue = liveJira.filter(j=>(j.status==='Write Review'||j.status==='Film Review')&&j.type!=='Book');
   const arcsReceived = liveJira.filter(j=>j.status==='ARC Received'&&j.type!=='Book');
+  const nd = getNextDeadline();
+  const ndDays = nd ? Math.round((new Date(nd.due)-now)/86400000) : null;
+  const urgentTitles = getUrgentTitles();
+
   const sys=`You are a warm reading assistant for Cups of Fiction (@cupsoffiction), a BookTok creator.
-TODAY: ${now.toDateString()} | ${daysToAug4} days until CoN #5 releases Aug 4 2026
+TODAY: ${now.toDateString()}
+NEXT DEADLINE: ${nd ? `${nd.title} (${nd.key}) due ${fmt(nd.due)} — ${ndDays} day${ndDays!==1?'s':''} away` : 'None scheduled'}
+${urgentTitles.length ? `PRIORITY READS (build toward next deadline): ${urgentTitles.join(' → ')}` : ''}
 
 CURRENTLY READING: ${currentlyReading.length ? currentlyReading.map(j=>`${j.title} by ${j.author} (${j.key}, due ${fmt(j.due)})`).join(', ') : 'Nothing in progress'}
 REVIEWS DUE: ${reviewsDue.length ? reviewsDue.map(j=>`${j.title} by ${j.author} (${j.key}, due ${fmt(j.due)})`).join(', ') : 'None'}
@@ -563,20 +598,16 @@ SCHEDULE: ${JSON.stringify(SCHEDULE.slice(0,15))}
 
 JIRA ACTIVE: ${JSON.stringify(activeJira.map(j=>({k:j.key,t:j.title,s:j.status,a:j.author,d:j.due})))}
 
-TBR (${BOOKS.length} physical books) KEY SERIES:
-- CoN urgent (before Aug 4): Slaying the Vampire Conqueror #2.5 → Songbird #3 → Fallen and the Kiss of Dusk #4
+TBR (${BOOKS.length} physical books) — series the user owns (snapshot from BookBuddy.csv):
 - Red Rising: books 1-6 | War of Lost Hearts: complete trilogy | Poppy War: books 2-3 (book 1 read)
 - Bloodsworn Saga: complete trilogy | Ashen Series: complete trilogy | Mistborn: books 1-3
 - Crescent City: books 2-3 only | Kings of Sin: books 2-3 only | Twisted: books 3-4 only
-- Full TBR: ${JSON.stringify(BOOKS.slice(0,50).map(b=>({t:b.title,a:b.author,s:b.series,v:b.volume,p:b.pages})))}
+- Crowns of Nyaxia: owns #2.5, #3, #4 (books 1-2 already read)
+- Full TBR sample: ${JSON.stringify(BOOKS.slice(0,50).map(b=>({t:b.title,a:b.author,s:b.series,v:b.volume,p:b.pages})))}
 
-KEY FACTS:
-- Currently reading: Metal Slinger by Rachel Schneider (CFI-22, due Jun 14)
-- URGENT REVIEW: The Correspondent by Virginia Evans (CFI-84, due Jun 14) — no reviews posted yet
-- CoN #1 & #2 already read. Shelf has #2.5 Slaying the Vampire Conqueror, #3 Songbird, #4 Fallen and the Kiss of Dusk. Must finish all 3 before Aug 4.
+GOALS:
 - TBR goal: ≤20 physical books by Dec 31 2026 (remove ${toRemove} books, need ${pace}/month)
 - Review platforms: Website, Goodreads, Fable, Amazon, Instagram (reels + posts)
-- Red Rising: all 6 books on shelf. War of Lost Hearts: complete trilogy. Poppy War: book 1 read, #2–3 on shelf.
 
 BEHAVIOUR:
 - When the user says they finished a book, acknowledge it warmly and remind them about reviews
@@ -649,11 +680,73 @@ async function syncJira(){
 
 // ─── INIT ─────────────────────────────────────────────────────
 document.getElementById('main-content').style.overflow='auto';
+
+// Load cached Jira data from last sync, if any
+try {
+  const cached = localStorage.getItem('jira_cache');
+  if (cached) {
+    LIVE_JIRA = JSON.parse(cached);
+    SCHEDULE = buildScheduleFromJira(LIVE_JIRA);
+  }
+} catch(e) { console.error('Failed to load Jira cache:', e); }
+
 renderHome();
 renderSchedule();
 renderTBR();
-renderJira();
+renderJira(LIVE_JIRA);
 initChat();
+// ─── PUSH NOTIFICATIONS ───────────────────────────────────────
+const VAPID_PUBLIC_KEY = 'BGUeRUeTxqAeRT5IkTmdQgcNdZe7Tj7R_RCekcIUqQf66LlsCtIdnJXEeM-u3k5Ewih2bVwIMiakzF3pRUciOyY';
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  return new Uint8Array([...rawData].map(c => c.charCodeAt(0)));
+}
+
+async function registerPush() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    return; // Push not supported on this browser
+  }
+
+  try {
+    // Check sw.js actually exists before registering (avoids 404 errors on
+    // preview environments or before sw.js has been uploaded to GitHub)
+    const swCheck = await fetch('./sw.js', { method: 'HEAD' }).catch(() => null);
+    if (!swCheck || !swCheck.ok) {
+      return; // sw.js not deployed yet — silently skip
+    }
+
+    const reg = await navigator.serviceWorker.register('./sw.js');
+    await navigator.serviceWorker.ready;
+
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') return;
+
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+
+      await fetch(WORKER, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-app-token': TOKEN },
+        body: JSON.stringify({ action: 'save_subscription', subscription: sub })
+      });
+    }
+  } catch(e) {
+    // Fail silently — push notifications are optional, shouldn't break the app
+  }
+}
+
+// Register push on load
+window.addEventListener('load', () => {
+  setTimeout(registerPush, 3000); // delay 3s so app loads first
+});
+
 </script>
 </body>
 </html>
